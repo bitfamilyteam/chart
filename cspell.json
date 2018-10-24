@@ -1,0 +1,31 @@
+{
+  "language": "en",
+  "dictionaryDefinitions": [
+    {
+      "name": "russian",
+      "file": "./node_modules/cspell-dict-russian/Russian.trie.gz",
+      "description": "Russian Dictionary"
+    },
+    {
+      "name": "ru-ru",
+      "file": "./node_modules/cspell-dict-ru_ru/ru_ru.trie.gz",
+      "description": "Russian Dictionary (Small)"
+    }
+  ],
+  "dictionaries": [
+    "russian",
+    "ru-ru"
+  ],
+  "words": [
+    "quantron",
+    "savl",
+    "truthy",
+    "devtools",
+    "unmount",
+
+    "litecoin",
+    "bcash",
+    "ethereum",
+    "biocoin"
+  ]
+}
