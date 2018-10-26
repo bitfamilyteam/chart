@@ -4,13 +4,11 @@ import React from 'react';
 import {
   Text, View, Image, Platform,
 } from 'react-native';
-import { Font } from 'expo';
 import TogglePeriod from './src/TogglePeriod';
 import ToggleCurrency from './src/ToggleCurrency';
 import Chart from './src/Chart';
 import { currencyKeys } from './src/currencyHelpers';
 import SavlLogo from './src/SavlLogo';
-import quickFuseFont from './QuickFuse.otf';
 import backgroundImage from './resources/background.jpg';
 
 function getTimeLimit(time, period) {
@@ -65,12 +63,6 @@ class ChartPage extends React.Component {
       page: 0,
       pickedCurrency: '',
     };
-  }
-
-  componentDidMount() {
-    Font.loadAsync({
-      'quick-fuse': quickFuseFont,
-    });
   }
 
   setPeriod = (period) => {
