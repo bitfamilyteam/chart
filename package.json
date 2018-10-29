@@ -39,7 +39,7 @@
       }
     }
   },
-  "dependencies": {
+  "peerDependencies": {
     "binary-search-bounds": "^2.0.4",
     "d3-array": "^1.2.1",
     "d3-ease": "^1.0.3",
