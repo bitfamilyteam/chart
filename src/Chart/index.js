@@ -223,7 +223,7 @@ class Chart extends React.PureComponent<ChartProps, ChartState> {
           >
             <TooltipText
               ref={this.onTooltipTextRef}
-              fontFamily="quick-fuse"
+              fontFamily="QuickFuse"
               period={period}
               width={width}
               data={data}
