@@ -40,17 +40,19 @@
     }
   },
   "peerDependencies": {
+    "moment": "^2.20.1",
+    "ramda": "^0.25.0",
+    "react": "^16.6.0",
+    "react-native": "^0.57.4",
+    "react-native-svg": "^8.0.8"
+  },
+  "dependencies": {
     "binary-search-bounds": "^2.0.4",
     "d3-array": "^1.2.1",
     "d3-ease": "^1.0.3",
     "d3-scale": "^2.1.0",
     "d3-shape": "^1.2.0",
-    "lodash.throttle": "^4.1.1",
-    "moment": "^2.22.2",
-    "ramda": "^0.25.0",
-    "react": "16.3.2",
-    "react-native": "~0.55.2",
-    "react-native-svg": "^6.3.1"
+    "lodash.throttle": "^4.1.1"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.3",
