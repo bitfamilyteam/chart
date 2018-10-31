@@ -66,8 +66,7 @@ class ChartPage extends React.Component {
   }
 
   setPeriod = (period) => {
-    this.setState({ period });
-    
+    this.setState({ period });    
   }
   
   setCurrency = (pickedCurrency) => {
