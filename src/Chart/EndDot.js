@@ -83,8 +83,9 @@ class EndDot extends React.PureComponent<EndDotProps> {
     );
   }
 
-  componentDidMount() {
-    this.scheduleAnimation();
+  componentWillReceiveProps(props) {
+    if (this.props.dotVisible !== props.dotVisible && props.dotVisible) this.scheduleAnimation();
+    else this.stopAnimation();
   }
 
   componentWillUnmount() {
