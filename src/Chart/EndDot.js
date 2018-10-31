@@ -9,7 +9,8 @@ import type { Point } from './types';
 type EndDotProps = {
   data: Array<Point>,
   convertX?: number => number,
-  convertY?: number => number
+  convertY?: number => number,
+  dotVisible: boolean
 };
 
 const ANIMATION_PERIOD_MS = 3000;
