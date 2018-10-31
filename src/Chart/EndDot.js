@@ -9,7 +9,8 @@ import type { Point } from './types';
 type EndDotProps = {
   data: Array<Point>,
   convertX?: number => number,
-  convertY?: number => number
+  convertY?: number => number,
+  dotVisible: boolean
 };
 
 const ANIMATION_PERIOD_MS = 3000;
@@ -83,8 +84,12 @@ class EndDot extends React.PureComponent<EndDotProps> {
     );
   }
 
-  componentDidMount() {
-    this.scheduleAnimation();
+  componentWillReceiveProps(props) {
+    if (this.props.dotVisible !== props.dotVisible && props.dotVisible) this.scheduleAnimation();
+    if (!props.dotVisible) {
+      this.stopAnimation();
+      clearTimeout(this.animationTimeoutId);
+    }
   }
 
   componentWillUnmount() {
@@ -104,13 +109,14 @@ class EndDot extends React.PureComponent<EndDotProps> {
   render() {
     const position = this.getPosition();
     if (!position) return null;
+    const color = this.props.dotVisible ? "rgba(255, 255, 255, 1)" : "none";
     return (
       <G x={position.x} y={position.y}>
         <Circle
           ref={this.onCircleRef}
           cx={0}
           cy={0}
-          stroke="rgba(255, 255, 255, 1)"
+          stroke={color}
           strokeWidth={0.5}
           fill="none"
           r={7}
@@ -118,7 +124,7 @@ class EndDot extends React.PureComponent<EndDotProps> {
         <Circle
           cx={0}
           cy={0}
-          fill="white"
+          fill={color}
           r={7}
         />
       </G>

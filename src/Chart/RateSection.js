@@ -87,7 +87,7 @@ class RateSection extends React.PureComponent<RateSectionProps, RateSectionState
     } = getRateStrings(this.props, this.state.position);
 
     const [wholeSum, partSum] = mainString.split('.');
-    const textStyle = { color: 'white', fontSize: 17, fontFamily: 'quick-fuse' };
+    const textStyle = { color: 'white', fontSize: 17, fontFamily: 'QuickFuse' };
 
     return (
       <View style={{ height: this.props.height || 60, width: '100%' }}>
