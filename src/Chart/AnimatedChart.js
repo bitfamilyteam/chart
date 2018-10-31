@@ -186,9 +186,7 @@ class AnimatedChart extends React.PureComponent<AnimatedChartProps, AnimatedChar
           {
                 this.renderTooltip(this.props.data)
           }
-          {
-            dotVisible && <EndDot data={data} />
-          }
+          <EndDot data={data} dotVisible={dotVisible} />
         </AreaChart>
       );
     }
