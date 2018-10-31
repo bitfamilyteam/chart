@@ -106,13 +106,14 @@ class EndDot extends React.PureComponent<EndDotProps> {
   render() {
     const position = this.getPosition();
     if (!position) return null;
+    const color = this.props.dotVisible ? "rgba(255, 255, 255, 1)" : "none";
     return (
       <G x={position.x} y={position.y}>
         <Circle
           ref={this.onCircleRef}
           cx={0}
           cy={0}
-          stroke="rgba(255, 255, 255, 1)"
+          stroke={color}
           strokeWidth={0.5}
           fill="none"
           r={7}
@@ -120,7 +121,7 @@ class EndDot extends React.PureComponent<EndDotProps> {
         <Circle
           cx={0}
           cy={0}
-          fill="white"
+          fill={color}
           r={7}
         />
       </G>
