@@ -59,7 +59,7 @@ class ChartPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      period: 'all',
+      period: 'year',
       page: 0,
       pickedCurrency: props.initialCurrency || '',
     };
