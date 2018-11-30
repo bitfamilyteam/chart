@@ -1,7 +1,7 @@
 import R from 'ramda';
 import moment from 'moment';
 import React from 'react';
-import { Text, View, Image, Platform, StyleSheet, ActivityIndicator } from 'react-native';
+import { Text, View, Image, Platform, StyleSheet } from 'react-native';
 import TogglePeriod from './src/TogglePeriod';
 import ToggleCurrency from './src/ToggleCurrency';
 import Chart from './src/Chart';
