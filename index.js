@@ -69,8 +69,8 @@ const stylesPrepared = bottomOffset =>
       ...stretch,
     },
     chart: {
-      left: 5,
-      right: 5,
+      left: 8,
+      right: 8,
       top: 80,
       bottom: 80 + bottomOffset,
     },
