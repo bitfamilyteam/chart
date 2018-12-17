@@ -20,30 +20,12 @@ type TogglePeriodProps = {
 };
 
 const periods = [
-  {
-    title: '\u2022 LIVE',
-    value: 'live',
-  },
-  {
-    title: '1D',
-    value: 'day',
-  },
-  {
-    title: '1W',
-    value: 'week',
-  },
-  {
-    title: '1M',
-    value: 'month',
-  },
-  {
-    title: '1Y',
-    value: 'year',
-  },
-  {
-    title: 'All',
-    value: 'all',
-  },
+  { title: '\u2022 LIVE', value: 'live' },
+  { title: '1D', value: 'day' },
+  { title: '1W', value: 'week' },
+  { title: '1M', value: 'month' },
+  { title: '1Y', value: 'year' },
+  { title: 'All', value: 'all' },
 ];
 
 const commonStyle = StyleSheet.create(TogglePeriodStyle());
@@ -66,12 +48,12 @@ function TogglePeriod(props: TogglePeriodProps) {
         onPress={() => setValue(period.value)}
       >
         <View style={style.textBackground}>
-          <Text style={isDeclining ? style.decliningText : style.growingText}> {title} </Text>
+          <Text style={isDeclining ? style.decliningText : style.growingText}>{title}</Text>
         </View>
       </TouchableHighlight>
     );
   }, periods);
-  return <View style={commonStyle.buttonsView}> {PeriodToggleButtonsView} </View>;
+  return <View style={commonStyle.buttonsView}>{PeriodToggleButtonsView}</View>;
 }
 
 export default TogglePeriod;
