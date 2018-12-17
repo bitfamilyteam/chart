@@ -1,11 +1,12 @@
 import R from 'ramda';
 import moment from 'moment';
 import React from 'react';
-import { Text, View, Image, Platform, StyleSheet } from 'react-native';
+import {
+  Text, View, Image, Platform, StyleSheet,
+} from 'react-native';
 import TogglePeriod from './src/TogglePeriod';
 import ToggleCurrency from './src/ToggleCurrency';
 import Chart from './src/Chart';
-import { currencyKeys } from './src/currencyHelpers';
 import SavlLogo from './src/SavlLogo';
 import backgroundImage from './resources/background.jpg';
 
@@ -29,10 +30,6 @@ function getTimeLimit(time, period) {
     default:
       return null;
   }
-}
-
-function prepareCurrencies(currencies) {
-  return R.filter(key => R.contains(key, currencies), currencyKeys);
 }
 
 function filterData(data, period, page) {
@@ -97,11 +94,11 @@ class ChartPage extends React.Component {
     };
   }
 
-  setPeriod = period => {
+  setPeriod = (period) => {
     this.setState({ period });
   };
 
-  setCurrency = pickedCurrency => {
+  setCurrency = (pickedCurrency) => {
     this.setState({ pickedCurrency });
 
     const { onCurrencyChange } = this.props;
@@ -112,13 +109,14 @@ class ChartPage extends React.Component {
 
   render() {
     const {
-      props: { data, bottomOffset },
-      state: { period, page, pickedCurrency, showChart },
+      props: { data, bottomOffset, currencies },
+      state: {
+        period, page, pickedCurrency, showChart,
+      },
     } = this;
     const styles = stylesPrepared(bottomOffset);
     if (!data) return <Text>Loading...</Text>;
 
-    const currencies = prepareCurrencies(R.keys(data));
     const currency = data[pickedCurrency] ? pickedCurrency : currencies[0];
     const currencyData = R.path([currency, 'usd', 'ratesData'], data);
 
