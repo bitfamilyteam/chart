@@ -41,10 +41,7 @@ type AreaChartType = {
 };
 
 class AreaChart extends React.PureComponent<AreaChartType> {
-  static defaultProps = {
-    svg: {},
-    contentInset: {},
-  };
+  static defaultProps = { svg: {}, contentInset: {} };
 
   createPaths(params: CreatePathsParams) {
     const {
@@ -79,11 +76,7 @@ class AreaChart extends React.PureComponent<AreaChartType> {
       .defined(item => typeof item.y === 'number')
       .curve(shape.curveLinear)(fullData);
 
-    return {
-      path,
-      shadow,
-      area,
-    };
+    return { path, shadow, area };
   }
 
   render() {
@@ -146,12 +139,13 @@ class AreaChart extends React.PureComponent<AreaChartType> {
               fill="none"
               d={paths.path}
             />
-            {React.Children.map(children, (child) => {
+            {React.Children.map(children, child => (child ? React.cloneElement(child, { convertX, convertY }) : null))}
+            {/* {React.Children.map(children, (child) => {
               if (child) {
                 return React.cloneElement(child, { convertX, convertY });
               }
               return null;
-            })}
+            })} */}
           </Svg>
         )}
       </View>

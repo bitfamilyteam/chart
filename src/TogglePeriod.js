@@ -63,13 +63,11 @@ function TogglePeriod(props: TogglePeriodProps) {
         title={title}
         color="transparent"
         underlayColor="transparent"
-        onPress={() => {
-          setValue(period.value);
-        }}
+        onPress={() => setValue(period.value)}
       >
         <View style={style.textBackground}>
-          <Text style={isDeclining ? style.decliningText : style.growingText}> {title} </Text>{' '}
-        </View>{' '}
+          <Text style={isDeclining ? style.decliningText : style.growingText}> {title} </Text>
+        </View>
       </TouchableHighlight>
     );
   }, periods);

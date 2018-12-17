@@ -12,9 +12,7 @@ type RateSectionProps = {
   fontFamily: string,
 };
 
-type RateSectionState = {
-  position?: number,
-};
+type RateSectionState = { position?: number };
 
 function prepareValue(value: number): string {
   const str = Math.abs(value).toFixed(2);
@@ -28,10 +26,7 @@ function preparePercents(value: number): string {
 function getRateStrings(props: RateSectionProps, position?: number) {
   const { data } = props;
   if (data.length <= 1) {
-    return {
-      mainString: '',
-      subString: '',
-    };
+    return { mainString: '', subString: '' };
   }
 
   const start = data[0].y;
@@ -52,17 +47,11 @@ function getRateStrings(props: RateSectionProps, position?: number) {
   const deltaString = `${start > end ? '-' : '+'} $${value}`;
 
   if (props.period === 'all') {
-    return {
-      mainString,
-      subString: deltaString,
-    };
+    return { mainString, subString: deltaString };
   }
 
   const percents = preparePercents(((end - start) / start) * 100);
-  return {
-    mainString,
-    subString: `${deltaString}(${percents}%)`,
-  };
+  return { mainString, subString: `${deltaString}(${percents}%)` };
 }
 
 class RateSection extends React.PureComponent<RateSectionProps, RateSectionState> {

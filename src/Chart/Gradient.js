@@ -31,10 +31,9 @@ type GradientProps = {
 };
 
 function renderStops(stops: GradientStops): Array<Node> {
-  return R.map(
-    stop => <Stop key={stop.offset} offset={stop.offset} stopColor={stop.color} stopOpacity={stop.opacity} />,
-    stops,
-  );
+  return R.map(stop => (
+    <Stop key={stop.offset} offset={stop.offset} stopColor={stop.color} stopOpacity={stop.opacity} />
+  ))(stops);
 }
 
 export default function Gradient(props: GradientProps) {

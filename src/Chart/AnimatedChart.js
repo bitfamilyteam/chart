@@ -11,17 +11,12 @@ import Tooltip from './Tooltip';
 import EndDot from './EndDot';
 import type { Point } from './types';
 
-type Range = {
-  min: number,
-  max: number,
-};
+type Range = { min: number, max: number };
 
-function getTimeRange(data: Array<Point>): Range {
-  return {
-    min: R.path(['0', 'x'], data) || 0,
-    max: R.path([data.length - 1, 'x'], data) || 0,
-  };
-}
+const getTimeRange = (data: Array<Point>): Range => ({
+  min: R.path(['0', 'x'], data) || 0,
+  max: R.path([data.length - 1, 'x'], data) || 0,
+});
 
 function areRangesOverlap(left: Range, right: Range): boolean {
   const minSize = Math.min(left.max - left.min, right.max - right.min);
@@ -39,9 +34,7 @@ function shouldAnimate(left: Range, right: Range): boolean {
   return scale > 0.8 && scale < 1.2;
 }
 
-function interpolate(from: number, to: number, phase: number): number {
-  return from + (to - from) * phase;
-}
+const interpolate = (from: number, to: number, phase: number): number => from + (to - from) * phase;
 
 type AnimatedChartProps = any;
 type AnimatedChartState = {
@@ -58,14 +51,10 @@ class AnimatedChart extends React.PureComponent<AnimatedChartProps, AnimatedChar
 
   constructor(props: AnimatedChartProps) {
     super(props);
-    this.state = {
-      oldData: [],
-    };
+    this.state = { oldData: [] };
   }
 
-  onPathRef = (path: any) => {
-    this.path = path;
-  };
+  onPathRef = (path: any) => (this.path = path);
 
   extent: Array<number>;
   oldExtent: Array<number>;

@@ -27,9 +27,7 @@ class EndDot extends React.PureComponent<EndDotProps> {
   requestId: any;
   startTime: number;
 
-  onCircleRef = (circle: Circle) => {
-    this.circle = circle;
-  };
+  onCircleRef = (circle: Circle) => (this.circle = circle);
 
   getCurrentTimeMS = () => new Date().getTime();
 

@@ -28,18 +28,12 @@ class Tooltip extends React.PureComponent<TooltipProps, { visible: boolean }> {
 
   constructor(props: TooltipProps) {
     super(props);
-    this.state = {
-      visible: false,
-    };
+    this.state = { visible: false };
   }
 
-  onRootRef = (root: G) => {
-    this.root = root;
-  };
+  onRootRef = (root: G) => (this.root = root);
 
-  onMarkRef = (mark: Circle) => {
-    this.mark = mark;
-  };
+  onMarkRef = (mark: Circle) => (this.mark = mark);
 
   interpolateDataPoint = (): ?Point => {
     const { position } = this;
@@ -53,10 +47,7 @@ class Tooltip extends React.PureComponent<TooltipProps, { visible: boolean }> {
     const start = data[index - 1];
     const end = data[index];
     const rate = (position - start.x) / (end.x - start.x);
-    return {
-      x: start.x + rate * (end.x - start.x),
-      y: start.y + rate * (end.y - start.y),
-    };
+    return { x: start.x + rate * (end.x - start.x), y: start.y + rate * (end.y - start.y) };
   };
 
   updatePosition = () => {
@@ -67,10 +58,7 @@ class Tooltip extends React.PureComponent<TooltipProps, { visible: boolean }> {
 
     const { convertX, convertY } = this.props;
     if (!convertX || !convertY) return;
-    const markerPoint = {
-      x: convertX(dataPoint.x),
-      y: convertY(dataPoint.y),
-    };
+    const markerPoint = { x: convertX(dataPoint.x), y: convertY(dataPoint.y) };
 
     if (markerPoint && this.root) {
       const matrix = extractTransform({ x: markerPoint.x });

@@ -39,18 +39,14 @@ type ChartState = {
   height: number,
 };
 
-function getDefaultFontFamily(): string {
-  return 'System';
-}
+const getDefaultFontFamily = (): string => 'System';
 
-function addInset(first: ContentInset, second?: ContentInset): ContentInset {
-  return {
-    left: first.left + (R.path(['left'], second) || 0),
-    right: first.right + (R.path(['right'], second) || 0),
-    top: first.top + (R.path(['top'], second) || 0),
-    bottom: first.bottom + (R.path(['bottom'], second) || 0),
-  };
-}
+const addInset = (first: ContentInset, second?: ContentInset): ContentInset => ({
+  left: first.left + R.propOr(0, ['left'], second),
+  right: first.right + R.propOr(0, ['right'], second),
+  top: first.top + R.propOr(0, ['top'], second),
+  bottom: first.bottom + R.propOr(0, ['bottom'], second),
+});
 
 const RATE_SECTION_HEIGHT = 60;
 
@@ -75,16 +71,11 @@ function calculateRightInset(period?: string, width: number, data: Array<Point>)
   return 30 + (width - 30) * part;
 }
 class Chart extends React.PureComponent<ChartProps, ChartState> {
-  static defaultProps = {
-    strokeWidth: 2,
-  };
+  static defaultProps = { strokeWidth: 2 };
 
   constructor(props: ChartProps) {
     super(props);
-    this.state = {
-      width: 0,
-      height: 0,
-    };
+    this.state = { width: 0, height: 0 };
 
     this.panResponder = PanResponder.create({
       onStartShouldSetPanResponder: R.T,
@@ -104,25 +95,15 @@ class Chart extends React.PureComponent<ChartProps, ChartState> {
   tooltipText: any;
   rateSection: any;
 
-  onTooltipRef = (tooltip: any) => {
-    this.tooltip = tooltip;
-  };
+  onTooltipRef = (tooltip: any) => (this.tooltip = tooltip);
 
-  onTooltipTextRef = (tooltipText: any) => {
-    this.tooltipText = tooltipText;
-  };
+  onTooltipTextRef = (tooltipText: any) => (this.tooltipText = tooltipText);
 
-  onRateSectionRef = (rateSection: any) => {
-    this.rateSection = rateSection;
-  };
+  onRateSectionRef = (rateSection: any) => (this.rateSection = rateSection);
 
-  onStartTouch = (event: PressEvent) => {
-    this.onTouch(event);
-  };
+  onStartTouch = (event: PressEvent) => this.onTouch(event);
 
-  onEndTouch = () => {
-    this.setPosition();
-  };
+  onEndTouch = () => this.setPosition();
 
   onTouch = (event: PressEvent) => {
     const { data } = this.props;
@@ -191,12 +172,7 @@ class Chart extends React.PureComponent<ChartProps, ChartState> {
             fontFamily={fontFamily}
           />
         </View>
-        <View
-          style={{
-            position: 'absolute',
-            top: 210,
-          }}
-        >
+        <View style={{ position: 'absolute', top: 210 }}>
           <TooltipText ref={this.onTooltipTextRef} fontFamily="QuickFuse" period={period} width={width} data={data} />
         </View>
         <AnimatedChart

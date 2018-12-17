@@ -18,17 +18,12 @@ type TooltipTextState = {
   markerPosition: number,
 };
 
-function measureText(text: string): number {
-  return (text.length - 1) * 8;
-}
+const measureText = (text: string): number => (text.length - 1) * 8;
 
 class TooltipText extends React.PureComponent<TooltipTextProps, TooltipTextState> {
   constructor(props: any) {
     super(props);
-    this.state = {
-      text: '',
-      markerPosition: 0,
-    };
+    this.state = { text: '', markerPosition: 0 };
   }
 
   setPosition(position: number): void {
@@ -37,10 +32,7 @@ class TooltipText extends React.PureComponent<TooltipTextProps, TooltipTextState
     const last = R.last(data);
     if (position && head && last) {
       const markerPosition = ((position - head.x) / (last.x - head.x)) * width;
-      this.setState({
-        text: formatTooltipText(position, this.props.period),
-        markerPosition,
-      });
+      this.setState({ text: formatTooltipText(position, this.props.period), markerPosition });
     } else {
       this.setState({ text: '' });
     }
@@ -51,23 +43,14 @@ class TooltipText extends React.PureComponent<TooltipTextProps, TooltipTextState
     const limit = measureText(text) / 2 + 5;
 
     if (markerPosition < limit) {
-      return {
-        left: 5,
-        textAlign: 'left',
-      };
+      return { left: 5, textAlign: 'left' };
     }
 
     const { width } = this.props;
     if (markerPosition > width - limit) {
-      return {
-        left: -5,
-        textAlign: 'right',
-      };
+      return { left: -5, textAlign: 'right' };
     }
-    return {
-      left: markerPosition - width / 2,
-      textAlign: 'center',
-    };
+    return { left: markerPosition - width / 2, textAlign: 'center' };
   };
 
   render() {

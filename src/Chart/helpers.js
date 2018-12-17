@@ -13,13 +13,7 @@ type ConvertPosition = {
 
 function handleSingleDataPoint(data: Array<Point>): Array<Point> {
   if (data.length === 1) {
-    return [
-      data[0],
-      {
-        ...data[0],
-        x: data[0].x + 1,
-      },
-    ];
+    return [data[0], { ...data[0], x: data[0].x + 1 }];
   }
   return data;
 }
