@@ -1,0 +1,59 @@
+{
+  "extends": "airbnb",
+  "parser": "babel-eslint",
+  "plugins": [
+    "react",
+    "jsx-a11y",
+    "import"
+  ],
+  "env": {
+    "browser": true
+  },
+  "rules": {
+    "react/jsx-one-expression-per-line": 0,
+    "react/destructuring-assignment": 0,
+    "implicit-arrow-linebreak": 0,
+    "import/no-cycle": 0,
+    "no-inner-declarations": 0,
+    "no-restricted-syntax": 1,
+    "new-cap": 1,
+    "no-continue": 1,
+    "no-underscore-dangle": 1,
+    "no-undef": 0,
+    "global-require": 1,
+    "react/no-multi-comp": 1,
+    "react/no-unused-prop-types": 0,
+    "react/no-unused-state": 0,
+    "react/require-default-props": 0,
+    "react/jsx-filename-extension": 0,
+    "react/sort-comp": 0,
+    "react/prop-types": 0,
+    "lines-between-class-members": [
+      "error",
+      "always",
+      {
+        "exceptAfterSingleLine": true
+      }
+    ],
+    "camelcase": 1,
+    "import/no-unresolved": 1,
+    "import/prefer-default-export": 0,
+    "import/extensions": 1,
+    "no-return-assign": 0,
+    "max-len": [
+      "warn",
+      {
+        "code": 120,
+        "tabWidth": 2,
+        "ignoreComments": true,
+        "ignoreRegExpLiterals": true,
+        "ignoreStrings": true,
+        "ignoreTrailingComments": true
+      }
+    ],
+    "no-alert": 0,
+    "radix": 0,
+    "no-mixed-operators": 0,
+    "react/no-array-index-key": 0
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "editor.formatOnSave": true,
+  "flow.useNPMPackagedFlow": true,
+  "editor.rulers": [120],
+  "prettier.useTabs": false,
+  "prettier.printWidth": 120,
+  "prettier.tabWidth": 2,
+  "prettier.parser": "flow",
+  "prettier.singleQuote": true,
+  "prettier.trailingComma": "all",
+  "prettier.eslintIntegration": true,
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "typescript.validate.enable": false,
+  "beautify.language": {
+    "css": [
+      "css",
+      "scss"
+    ],
+    "html": [
+      "htm",
+      "html"
+    ]
+  }
+}

@@ -10,22 +10,40 @@ import TogglePeriodStyle from './TogglePeriod.style';
 type Period = {
   title: string,
   type: string,
-  diff: number
+  diff: number,
 };
 
 type TogglePeriodProps = {
   value: string,
   setValue: string => void,
-  isDeclining?: boolean
+  isDeclining?: boolean,
 };
 
 const periods = [
-  { title: '\u2022 LIVE', value: 'live' },
-  { title: '1D', value: 'day' },
-  { title: '1W', value: 'week' },
-  { title: '1M', value: 'month' },
-  { title: '1Y', value: 'year' },
-  { title: 'All', value: 'all' },
+  {
+    title: '\u2022 LIVE',
+    value: 'live',
+  },
+  {
+    title: '1D',
+    value: 'day',
+  },
+  {
+    title: '1W',
+    value: 'week',
+  },
+  {
+    title: '1M',
+    value: 'month',
+  },
+  {
+    title: '1Y',
+    value: 'year',
+  },
+  {
+    title: 'All',
+    value: 'all',
+  },
 ];
 
 const commonStyle = StyleSheet.create(TogglePeriodStyle());
@@ -50,20 +68,12 @@ function TogglePeriod(props: TogglePeriodProps) {
         }}
       >
         <View style={style.textBackground}>
-          <Text
-            style={isDeclining ? style.decliningText : style.growingText}
-          >
-            {title}
-          </Text>
-        </View>
+          <Text style={isDeclining ? style.decliningText : style.growingText}> {title} </Text>{' '}
+        </View>{' '}
       </TouchableHighlight>
     );
   }, periods);
-  return (
-    <View style={commonStyle.buttonsView}>
-      {PeriodToggleButtonsView}
-    </View>
-  );
+  return <View style={commonStyle.buttonsView}> {PeriodToggleButtonsView} </View>;
 }
 
 export default TogglePeriod;

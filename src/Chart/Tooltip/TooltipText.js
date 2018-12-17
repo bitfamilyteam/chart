@@ -10,12 +10,12 @@ type TooltipTextProps = {
   fontFamily: string,
   period?: string,
   width: number,
-  data: Array<Point>
+  data: Array<Point>,
 };
 
 type TooltipTextState = {
   text: string,
-  markerPosition: number
+  markerPosition: number,
 };
 
 function measureText(text: string): number {
@@ -36,7 +36,7 @@ class TooltipText extends React.PureComponent<TooltipTextProps, TooltipTextState
     const head = R.head(data);
     const last = R.last(data);
     if (position && head && last) {
-      const markerPosition = (position - head.x) / (last.x - head.x) * width;
+      const markerPosition = ((position - head.x) / (last.x - head.x)) * width;
       this.setState({
         text: formatTooltipText(position, this.props.period),
         markerPosition,
@@ -68,7 +68,7 @@ class TooltipText extends React.PureComponent<TooltipTextProps, TooltipTextState
       left: markerPosition - width / 2,
       textAlign: 'center',
     };
-  }
+  };
 
   render() {
     const { width, fontFamily } = this.props;

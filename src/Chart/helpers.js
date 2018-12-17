@@ -1,17 +1,14 @@
 // @flow
 
 import R from 'ramda';
-import type {
-  Point,
-  Range,
-} from './types';
+import type { Point, Range } from './types';
 
 type ConvertPosition = {
   data: Array<Point>,
   locationX: number,
   locationY: number,
   width: number,
-  height: number
+  height: number,
 };
 
 function handleSingleDataPoint(data: Array<Point>): Array<Point> {
@@ -42,14 +39,10 @@ function screenToDataPosition(props: ConvertPosition): Point {
   const xRange = getRange(R.prop('x'), fixedData);
   const yRange = getRange(R.prop('y'), fixedData);
   const position = {
-    x: locationX / width * (xRange.max - xRange.min) + xRange.min,
-    y: locationY / height * (yRange.max - yRange.min) + yRange.min,
+    x: (locationX / width) * (xRange.max - xRange.min) + xRange.min,
+    y: (locationY / height) * (yRange.max - yRange.min) + yRange.min,
   };
   return position;
 }
 
-export {
-  handleSingleDataPoint,
-  getRange,
-  screenToDataPosition,
-};
+export { handleSingleDataPoint, getRange, screenToDataPosition };

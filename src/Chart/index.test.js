@@ -129,14 +129,11 @@ it('handles touch', (done) => {
   expect(tooltip.instance.state.visible).toBe(true);
   rendered.root.instance.onEndTouch();
 
-  setTimeout(
-    () => {
-      expect(tooltip.instance.state.visible).toBe(false);
-      expect(tooltip.findByType(G).props.opacity).toBe(0);
-      done();
-    },
-    60,
-  );
+  setTimeout(() => {
+    expect(tooltip.instance.state.visible).toBe(false);
+    expect(tooltip.findByType(G).props.opacity).toBe(0);
+    done();
+  }, 60);
 });
 
 describe('rendered custom strokeWidth', () => {
@@ -230,7 +227,7 @@ describe('render different amount of data', () => {
 });
 
 type PseudoComponentState = {
-  data: Array<Point>
+  data: Array<Point>,
 };
 
 class WrappedChart extends PureComponent<any, PseudoComponentState> {
@@ -325,7 +322,11 @@ it('changing layout wont cause changing tooltip position', () => {
   const { locationX, locationY } = event.nativeEvent;
   const { width, height } = rendered.root.instance.state;
   const expectedPosition = screenToDataPosition({
-    data, locationX, locationY, width, height,
+    data,
+    locationX,
+    locationY,
+    width,
+    height,
   });
   const { onTouch } = rendered.root.instance;
   onTouch(event);
@@ -341,7 +342,11 @@ it('changing layout wont cause changing tooltip position', () => {
   }
 
   const nextPosition = screenToDataPosition({
-    data, locationX, locationY, width: newWidth, height: newHeight,
+    data,
+    locationX,
+    locationY,
+    width: newWidth,
+    height: newHeight,
   });
   expect(nextPosition).toEqual(expectedPosition);
 });
@@ -536,11 +541,7 @@ it('day view works', () => {
 });
 
 it('rate section works', () => {
-  const testData = [
-    { x: 100, y: 10000 },
-    { x: 150, y: 15000 },
-    { x: 200, y: 5000.55 },
-  ];
+  const testData = [{ x: 100, y: 10000 }, { x: 150, y: 15000 }, { x: 200, y: 5000.55 }];
   const gradientOptions = R.clone(defaultGradients);
   const rendered = renderChartAndInitLayout({ data: testData, gradientOptions });
 

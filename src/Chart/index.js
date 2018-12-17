@@ -172,7 +172,9 @@ class Chart extends React.PureComponent<ChartProps, ChartState> {
   }
 
   render() {
-    const { data, strokeWidth, tooltip, period, currency, fontFamily = getDefaultFontFamily() } = this.props;
+    const {
+      data, strokeWidth, tooltip, period, currency, fontFamily = getDefaultFontFamily(),
+    } = this.props;
     if (!data.length) return <View />;
     const { width, height } = this.state;
     const newData = handleSingleDataPoint(data);

@@ -9,12 +9,12 @@ type RateSectionProps = {
   data: Array<Point>,
   period?: string,
   height?: number,
-  fontFamily: string
-}
+  fontFamily: string,
+};
 
 type RateSectionState = {
-  position?: number
-}
+  position?: number,
+};
 
 function prepareValue(value: number): string {
   const str = Math.abs(value).toFixed(2);
@@ -38,10 +38,7 @@ function getRateStrings(props: RateSectionProps, position?: number) {
   let end = data[data.length - 1].y;
   if (position) {
     const limit: number = position;
-    const index = R.findLastIndex(
-      ({ x }) => x <= limit,
-      data,
-    );
+    const index = R.findLastIndex(({ x }) => x <= limit, data);
     if (index >= 0 && index < data.length - 1) {
       const left = data[index];
       const right = data[index + 1];
@@ -61,7 +58,7 @@ function getRateStrings(props: RateSectionProps, position?: number) {
     };
   }
 
-  const percents = preparePercents((end - start) / start * 100);
+  const percents = preparePercents(((end - start) / start) * 100);
   return {
     mainString,
     subString: `${deltaString}(${percents}%)`,
@@ -71,8 +68,7 @@ function getRateStrings(props: RateSectionProps, position?: number) {
 class RateSection extends React.PureComponent<RateSectionProps, RateSectionState> {
   constructor(props: RateSectionProps) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
   }
 
   setPosition(position?: number) {
@@ -81,10 +77,7 @@ class RateSection extends React.PureComponent<RateSectionProps, RateSectionState
 
   render() {
     const { fontFamily } = this.props;
-    const {
-      mainString,
-      subString,
-    } = getRateStrings(this.props, this.state.position);
+    const { mainString, subString } = getRateStrings(this.props, this.state.position);
 
     const [wholeSum, partSum] = mainString.split('.');
     const textStyle = { color: 'white', fontSize: 17, fontFamily: 'QuickFuse' };
@@ -92,26 +85,21 @@ class RateSection extends React.PureComponent<RateSectionProps, RateSectionState
     return (
       <View style={{ height: this.props.height || 60, width: '100%' }}>
         <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'center' }}>
-          <Text style={textStyle}>
-          $
-          </Text>
-          <Text style={{
-            ...textStyle,
-            fontSize: 36,
-            position: 'relative',
-            top: 2,
-          }}
+          <Text style={textStyle}>$</Text>
+          <Text
+            style={{
+              ...textStyle,
+              fontSize: 36,
+              position: 'relative',
+              top: 2,
+            }}
           >
             {wholeSum}.
           </Text>
-          <Text style={textStyle}>
-            {partSum}
-          </Text>
+          <Text style={textStyle}>{partSum}</Text>
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-          <Text style={{ ...textStyle, fontFamily }}>
-            {subString}
-          </Text>
+          <Text style={{ ...textStyle, fontFamily }}>{subString}</Text>
         </View>
       </View>
     );

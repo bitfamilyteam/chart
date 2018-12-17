@@ -3,14 +3,9 @@
 import R from 'ramda';
 import React from 'react';
 import {
-  View,
-  TouchableHighlight,
-  Text,
-  StyleSheet
+  View, TouchableHighlight, Text, StyleSheet,
 } from 'react-native';
-import Svg, {
-  Line
-} from 'react-native-svg';
+import Svg, { Line } from 'react-native-svg';
 
 const inactiveColor = 'rgba(255, 255, 255, 0.4)';
 
@@ -39,86 +34,56 @@ type TogglePeriodProps = {
   value: string,
   setValue: string => void,
   currencies: {
-    [string]: string
+    [string]: string,
   },
 };
 
-function DecorationLine(props: {
-  style: any
-}) {
-  return ( <
-    Svg style = {
-      {
+function DecorationLine(props: { style: any }) {
+  return (
+    <Svg
+      style={{
         width: 30,
         height: 1,
-        ...props.style
-      }
-    } >
-    <
-    Line x1 = "0"
-    y1 = "0"
-    x2 = "30"
-    y2 = "0"
-    strokeWidth = "1"
-    stroke = {
-      inactiveColor
-    }
-    /> < /
-    Svg >
+        ...props.style,
+      }}
+    >
+      <Line x1="0" y1="0" x2="30" y2="0" strokeWidth="1" stroke={inactiveColor} />{' '}
+    </Svg>
   );
 }
 
 function ToggleCurrency(props: TogglePeriodProps) {
-  const {
-    value,
-    setValue,
-    currencies
-  } = props;
-  return ( <
-      View style = {
-        styleSheet.buttonsView
-      } >
-      <
-      DecorationLine style = {
-        {
-          marginRight: 5
-        }
-      }
-      /> {
-      R.pipe(
-        R.mapObjIndexed((label, slug) => ( <
-          TouchableHighlight key = {
-            slug
-          }
-          style = {
-            styleSheet.button
-          }
-          color = "transparent"
-          underlayColor = "transparent"
-          onPress = {
-            () => {
+  const { value, setValue, currencies } = props;
+  return (
+    <View style={styleSheet.buttonsView}>
+      <DecorationLine
+        style={{
+          marginRight: 5,
+        }}
+      />{' '}
+      {R.pipe(
+        R.mapObjIndexed((label, slug) => (
+          <TouchableHighlight
+            key={slug}
+            style={styleSheet.button}
+            color="transparent"
+            underlayColor="transparent"
+            onPress={() => {
               setValue(slug);
-            }
-          } >
-          <
-          Text style = {
-            value === slug ? styleSheet.activeText : styleSheet.text
-          } > {
-            label
-          } < /Text> < /
-          TouchableHighlight >
+            }}
+          >
+            <Text style={value === slug ? styleSheet.activeText : styleSheet.text}> {label} </Text>{' '}
+          </TouchableHighlight>
         )),
         R.values,
-      )(currencies)
-    } <
-    DecorationLine style = {
-      {
-        marginLeft: 5
-      }
-    }
-  /> < /
-  View >
-);
+      )(currencies)}{' '}
+      <DecorationLine
+        style={{
+          marginLeft: 5,
+        }}
+      />{' '}
+    </View>
+  );
 }
 
 export default ToggleCurrency;

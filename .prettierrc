@@ -1,0 +1,9 @@
+{
+  "useTabs": false,
+  "printWidth": 120,
+  "tabWidth": 2,
+  "parser": "flow",
+  "singleQuote": true,
+  "trailingComma": "all",
+  "eslintIntegration": true
+}

@@ -10,7 +10,7 @@ type EndDotProps = {
   data: Array<Point>,
   convertX?: number => number,
   convertY?: number => number,
-  dotVisible: boolean
+  dotVisible: boolean,
 };
 
 const ANIMATION_PERIOD_MS = 3000;
@@ -29,9 +29,9 @@ class EndDot extends React.PureComponent<EndDotProps> {
 
   onCircleRef = (circle: Circle) => {
     this.circle = circle;
-  }
+  };
 
-  getCurrentTimeMS = () => new Date().getTime()
+  getCurrentTimeMS = () => new Date().getTime();
 
   update = () => {
     if (this.circle) {
@@ -55,34 +55,31 @@ class EndDot extends React.PureComponent<EndDotProps> {
     }
 
     this.scheduleUpdate();
-  }
+  };
 
   scheduleUpdate = () => {
     this.requestId = requestAnimationFrame(this.update);
-  }
+  };
 
   startAnimation = () => {
     this.stopAnimation();
     this.startTime = this.getCurrentTimeMS();
     this.scheduleUpdate();
-  }
+  };
 
   stopAnimation = () => {
     if (this.requestId) {
       cancelAnimationFrame(this.requestId);
       this.requestId = null;
     }
-  }
+  };
 
   scheduleAnimation = () => {
-    this.animationTimeoutId = setTimeout(
-      () => {
-        this.startAnimation();
-        this.scheduleAnimation();
-      },
-      ANIMATION_PERIOD_MS,
-    );
-  }
+    this.animationTimeoutId = setTimeout(() => {
+      this.startAnimation();
+      this.scheduleAnimation();
+    }, ANIMATION_PERIOD_MS);
+  };
 
   componentWillReceiveProps(props) {
     if (this.props.dotVisible !== props.dotVisible && props.dotVisible) this.scheduleAnimation();
@@ -97,36 +94,23 @@ class EndDot extends React.PureComponent<EndDotProps> {
     clearTimeout(this.animationTimeoutId);
   }
 
-  getPosition = () : ?Point => {
+  getPosition = (): ?Point => {
     const { data, convertX, convertY } = this.props;
     const endPoint = data[data.length - 1];
 
     if (!convertX || !convertY) return null;
 
     return { x: convertX(endPoint.x), y: convertY(endPoint.y) };
-  }
+  };
 
   render() {
     const position = this.getPosition();
     if (!position) return null;
-    const color = this.props.dotVisible ? "rgba(255, 255, 255, 1)" : "none";
+    const color = this.props.dotVisible ? 'rgba(255, 255, 255, 1)' : 'none';
     return (
       <G x={position.x} y={position.y}>
-        <Circle
-          ref={this.onCircleRef}
-          cx={0}
-          cy={0}
-          stroke={color}
-          strokeWidth={0.5}
-          fill="none"
-          r={7}
-        />
-        <Circle
-          cx={0}
-          cy={0}
-          fill={color}
-          r={7}
-        />
+        <Circle ref={this.onCircleRef} cx={0} cy={0} stroke={color} strokeWidth={0.5} fill="none" r={7} />
+        <Circle cx={0} cy={0} fill={color} r={7} />
       </G>
     );
   }

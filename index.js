@@ -95,11 +95,15 @@ class ChartPage extends React.Component {
   }
 
   setPeriod = (period) => {
-    this.setState({ period });
+    this.setState({
+      period,
+    });
   };
 
   setCurrency = (pickedCurrency) => {
-    this.setState({ pickedCurrency });
+    this.setState({
+      pickedCurrency,
+    });
 
     const { onCurrencyChange } = this.props;
     if (onCurrencyChange) {
@@ -110,12 +114,10 @@ class ChartPage extends React.Component {
   render() {
     const {
       props: { data, bottomOffset, currencies },
-      state: {
-        period, page, pickedCurrency, showChart,
-      },
+      state: { period, page, pickedCurrency },
     } = this;
     const styles = stylesPrepared(bottomOffset);
-    if (!data) return <Text>Loading...</Text>;
+    if (!data) return <Text> Loading... </Text>;
 
     const currency = data[pickedCurrency] ? pickedCurrency : currencies[0];
     const currencyData = R.path([currency, 'usd', 'ratesData'], data);

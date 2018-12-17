@@ -9,43 +9,39 @@ type GradientCoords = {
   x1: string,
   x2: string,
   y1: string,
-  y2: string
+  y2: string,
 };
 
 type GradientStop = {
   offset: string,
   color: string,
-  opacity: number
+  opacity: number,
 };
 
 type GradientStops = Array<GradientStop>;
 
 type GradientOptions = {
   coords: GradientCoords,
-  stops: GradientStops
+  stops: GradientStops,
 };
 
 type GradientProps = {
   options: GradientOptions,
-  id: string
+  id: string,
 };
 
 function renderStops(stops: GradientStops): Array<Node> {
   return R.map(
-    stop => (
-      <Stop
-        key={stop.offset}
-        offset={stop.offset}
-        stopColor={stop.color}
-        stopOpacity={stop.opacity}
-      />
-    ),
+    stop => <Stop key={stop.offset} offset={stop.offset} stopColor={stop.color} stopOpacity={stop.opacity} />,
     stops,
   );
 }
 
 export default function Gradient(props: GradientProps) {
-  const { options: { coords, stops }, id } = props;
+  const {
+    options: { coords, stops },
+    id,
+  } = props;
   const {
     x1, x2, y1, y2,
   } = coords;
