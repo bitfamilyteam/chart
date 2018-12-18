@@ -33,7 +33,7 @@ function getTimeLimit(time, period) {
 }
 
 function filterData(data, period, page) {
-  if (data.length) {
+  if (data && data.length) {
     const lastTime = moment(data[data.length - 1].x);
     lastTime.subtract(page, 'day');
     const timeLimit = getTimeLimit(lastTime, period);
@@ -94,22 +94,10 @@ class ChartPage extends React.Component {
     };
   }
 
-  setPeriod = (period) => {
-    this.setState({
-      period,
-    });
-  };
+  setPeriod = period => this.setState({ period });
 
-  setCurrency = (pickedCurrency) => {
-    this.setState({
-      pickedCurrency,
-    });
-
-    const { onCurrencyChange } = this.props;
-    if (onCurrencyChange) {
-      onCurrencyChange(pickedCurrency);
-    }
-  };
+  setCurrency = pickedCurrency =>
+    this.setState({ pickedCurrency }, () => this.props.onCurrencyChange && this.props.onCurrencyChange(pickedCurrency));
 
   render() {
     const {
@@ -117,7 +105,7 @@ class ChartPage extends React.Component {
       state: { period, page, pickedCurrency },
     } = this;
     const styles = stylesPrepared(bottomOffset);
-    if (!data) return <Text> Loading... </Text>;
+    if (!data) return <Text>Loading...</Text>;
 
     const currency = data[pickedCurrency] ? pickedCurrency : currencies[0];
     const currencyData = R.path([currency, 'usd', 'ratesData'], data);
@@ -126,7 +114,7 @@ class ChartPage extends React.Component {
     const isDeclining = filteredData.length >= 2 && filteredData[0].y > filteredData[filteredData.length - 1].y;
     return (
       <View style={styles.container}>
-        {Platform.OS === 'ios' && <Image style={styles.bg} source={backgroundImage} />}
+        <Image style={styles.bg} source={backgroundImage} />
         <View style={styles.chartWrapper}>
           <Chart data={filteredData} period={period} currency={currency} contentInset={styles.chart} />
           <View style={styles.bottom}>

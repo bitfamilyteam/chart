@@ -60,20 +60,30 @@ class AreaChart extends React.PureComponent<AreaChartType> {
       .defined(item => typeof item.y === 'number')
       .curve(shape.curveLinear)(shadowPoints);
 
-    const areaData = [{ x: fullData[0].x, y: yMin }, ...fullData, { x: fullData[fullData.length - 1].x, y: yMin }];
+    const areaData = [
+      {
+        x: R.head(fullData).x,
+        y: yMin,
+      },
+      ...fullData,
+      {
+        x: R.last(fullData).x,
+        y: yMin,
+      },
+    ];
     const area = shape
       .area()
-      .x(point => convertX(point.x))
+      .x(({ x }) => convertX(x))
       .y0(convertY(0))
-      .y1(point => convertY(point.y))
-      .defined(item => typeof item.y === 'number')
+      .y1(({ y }) => convertY(y))
+      .defined(({ y }) => typeof y === 'number')
       .curve(shape.curveLinear)(areaData);
 
     const path = shape
       .line()
-      .x(point => convertX(point.x))
-      .y(point => convertY(point.y))
-      .defined(item => typeof item.y === 'number')
+      .x(({ x }) => convertX(x))
+      .y(({ y }) => convertY(y))
+      .defined(({ y }) => typeof y === 'number')
       .curve(shape.curveLinear)(fullData);
 
     return { path, shadow, area };
@@ -93,20 +103,15 @@ class AreaChart extends React.PureComponent<AreaChartType> {
 
     const { width, height } = this.props;
 
-    if (data.length === 0) {
+    if (!(data && data.length)) {
       return <View />;
     }
 
-    const yValues = data.map(item => item.y);
-    const xValues = data.map(item => item.x);
+    const yValues = R.pluck('y')(data);
+    const xValues = R.pluck('x')(data);
 
-    const yExtent = array.extent([...yValues, gridMin, gridMax]);
-    const xExtent = array.extent([...xValues]);
-
-    const yMin = yExtent[0];
-    const yMax = yExtent[1];
-    const xMin = xExtent[0];
-    const xMax = xExtent[1];
+    const [yMin, yMax] = array.extent([...yValues, gridMin, gridMax]);
+    const [xMin, xMax] = array.extent([...xValues]);
 
     const convertY = scale
       .scaleLinear()
@@ -140,12 +145,6 @@ class AreaChart extends React.PureComponent<AreaChartType> {
               d={paths.path}
             />
             {React.Children.map(children, child => (child ? React.cloneElement(child, { convertX, convertY }) : null))}
-            {/* {React.Children.map(children, (child) => {
-              if (child) {
-                return React.cloneElement(child, { convertX, convertY });
-              }
-              return null;
-            })} */}
           </Svg>
         )}
       </View>

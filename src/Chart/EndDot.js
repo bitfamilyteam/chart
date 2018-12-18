@@ -94,7 +94,7 @@ class EndDot extends React.PureComponent<EndDotProps> {
 
   getPosition = (): ?Point => {
     const { data, convertX, convertY } = this.props;
-    const endPoint = data[data.length - 1];
+    const endPoint = R.last(data);
 
     if (!convertX || !convertY) return null;
 

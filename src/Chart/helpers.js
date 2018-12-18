@@ -11,24 +11,17 @@ type ConvertPosition = {
   height: number,
 };
 
-function handleSingleDataPoint(data: Array<Point>): Array<Point> {
-  if (data.length === 1) {
-    return [data[0], { ...data[0], x: data[0].x + 1 }];
-  }
-  return data;
-}
+const handleSingleDataPoint = (data: Array<Point>): Array<Point> =>
+  data && (data.length === 1 ? [data[0], { ...data[0], x: data[0].x + 1 }] : data);
 
-function getRange(getter: any => number, data: Array<Point>): Range {
-  return {
-    min: getter(R.reduce(R.minBy(getter), data[0], data)),
-    max: getter(R.reduce(R.maxBy(getter), data[0], data)),
-  };
-}
+const getRange = (getter: any => number, data: Array<Point>): Range => ({
+  min: getter(R.reduce(R.minBy(getter), data[0], data)),
+  max: getter(R.reduce(R.maxBy(getter), data[0], data)),
+});
 
-function screenToDataPosition(props: ConvertPosition): Point {
-  const {
-    data, locationX, locationY, width, height,
-  } = props;
+const screenToDataPosition = ({
+  data, locationX, locationY, width, height,
+}: ConvertPosition): Point => {
   const fixedData = handleSingleDataPoint(data);
   const xRange = getRange(R.prop('x'), fixedData);
   const yRange = getRange(R.prop('y'), fixedData);
@@ -37,6 +30,6 @@ function screenToDataPosition(props: ConvertPosition): Point {
     y: (locationY / height) * (yRange.max - yRange.min) + yRange.min,
   };
   return position;
-}
+};
 
 export { handleSingleDataPoint, getRange, screenToDataPosition };

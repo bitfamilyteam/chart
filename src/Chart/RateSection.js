@@ -24,17 +24,17 @@ function preparePercents(value: number): string {
 }
 
 function getRateStrings(props: RateSectionProps, position?: number) {
-  const { data } = props;
-  if (data.length <= 1) {
+  const { data, period } = props;
+  if (data && data.length <= 1) {
     return { mainString: '', subString: '' };
   }
 
-  const start = data[0].y;
-  let end = data[data.length - 1].y;
+  const start = R.head(data).y;
+  let end = R.last(data).y;
   if (position) {
     const limit: number = position;
     const index = R.findLastIndex(({ x }) => x <= limit, data);
-    if (index >= 0 && index < data.length - 1) {
+    if (index >= 0 && data && index < data.length - 1) {
       const left = data[index];
       const right = data[index + 1];
       const phase = (position - left.x) / (right.x - left.x);
@@ -46,7 +46,7 @@ function getRateStrings(props: RateSectionProps, position?: number) {
   const value = prepareValue(end - start);
   const deltaString = `${start > end ? '-' : '+'} $${value}`;
 
-  if (props.period === 'all') {
+  if (period === 'all') {
     return { mainString, subString: deltaString };
   }
 

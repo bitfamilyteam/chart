@@ -57,9 +57,9 @@ function generateGradients(gradientOptions: { [key: string]: GradientOptions }):
 
 function calculateRightInset(period?: string, width: number, data: Array<Point>): number {
   if (period === 'live') return 30;
-  if (period !== 'day' || data.length === 0) return 0;
+  if (period !== 'day' || !data || data.length === 0) return 0;
 
-  const currentTime = data[data.length - 1].x;
+  const currentTime = R.last(data).x;
   const startOfDayTime = moment(currentTime)
     .startOf('day')
     .valueOf();
@@ -106,17 +106,17 @@ class Chart extends React.PureComponent<ChartProps, ChartState> {
   onEndTouch = () => this.setPosition();
 
   onTouch = (event: PressEvent) => {
-    const { data } = this.props;
-    if (data.length < 2 || !this.tooltip) return;
-    if (this.props.period === 'live') return;
+    const { data, period } = this.props;
+    if ((data && data.length < 2) || !this.tooltip) return;
+    if (period === 'live') return;
 
     const { width } = this.state;
     const { locationX } = event.nativeEvent;
     const { left, right } = this.getContentInset();
     const part = Math.min(1, (locationX - left) / (width - left - right));
 
-    const min = data[0].x;
-    const max = data[data.length - 1].x;
+    const min = R.head(data).x;
+    const max = R.last(data).x;
     const position = min + part * (max - min);
     this.setPosition(position);
   };
@@ -135,7 +135,7 @@ class Chart extends React.PureComponent<ChartProps, ChartState> {
   getContentInset(): ContentInset {
     const { width, height } = this.state;
     const { data, period } = this.props;
-    if (data.length === 1) {
+    if (data && data.length === 1) {
       return {
         left: 0,
         right: 0,
@@ -156,7 +156,7 @@ class Chart extends React.PureComponent<ChartProps, ChartState> {
     const {
       data, strokeWidth, tooltip, period, currency, fontFamily = getDefaultFontFamily(),
     } = this.props;
-    if (!data.length) return <View />;
+    if (!(data && data.length)) return <View />;
     const { width, height } = this.state;
     const newData = handleSingleDataPoint(data);
     const gradientOptions = R.mergeDeepRight(defaultGradients, this.props.gradientOptions || {});

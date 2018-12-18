@@ -38,7 +38,7 @@ class Tooltip extends React.PureComponent<TooltipProps, { visible: boolean }> {
   interpolateDataPoint = (): ?Point => {
     const { position } = this;
     const { data } = this.props;
-    if (!position || !data || !data.length || data[0].x > position || data[data.length - 1].x < position) {
+    if (!position || !data || !data.length || R.head(data).x > position || R.last(data).x < position) {
       return null;
     }
 

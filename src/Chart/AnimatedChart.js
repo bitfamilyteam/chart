@@ -13,10 +13,12 @@ import type { Point } from './types';
 
 type Range = { min: number, max: number };
 
-const getTimeRange = (data: Array<Point>): Range => ({
-  min: R.path(['0', 'x'], data) || 0,
-  max: R.path([data.length - 1, 'x'], data) || 0,
-});
+const getTimeRange = (data: Array<Point>): Range =>
+  data
+  && data.length && {
+    min: R.pathOr(0, ['0', 'x'], data),
+    max: R.pathOr(0, [data.length - 1, 'x'], data),
+  };
 
 function areRangesOverlap(left: Range, right: Range): boolean {
   const minSize = Math.min(left.max - left.min, right.max - right.min);
@@ -151,7 +153,7 @@ class AnimatedChart extends React.PureComponent<AnimatedChartProps, AnimatedChar
     };
 
     const { oldData, gridMin, gridMax } = this.state;
-    if (oldData.length) {
+    if (oldData && oldData.length) {
       props.gridMin = gridMin;
       props.gridMax = gridMax;
     }
