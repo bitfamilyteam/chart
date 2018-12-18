@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import R from 'ramda';
 import { G, Circle } from 'react-native-svg';
 import * as ease from 'd3-ease';
 import extractTransform from 'react-native-svg/lib/extract/extractTransform';

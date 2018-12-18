@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import R from 'ramda';
 import throttle from 'lodash.throttle';
 import { G, Line, Circle } from 'react-native-svg';
 import bounds from 'binary-search-bounds';
