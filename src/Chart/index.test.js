@@ -22,26 +22,11 @@ import Chart from './index';
 declare var expect: any;
 
 const data = [
-  {
-    x: 1529927077000,
-    y: 6219.01,
-  },
-  {
-    x: 1529927617000,
-    y: 6225.17,
-  },
-  {
-    x: 1529927677000,
-    y: 6227.08,
-  },
-  {
-    x: 1529927737000,
-    y: 6232.47,
-  },
-  {
-    x: 1529927747000,
-    y: 6232.25,
-  },
+  { x: 1529927077000, y: 6219.01 },
+  { x: 1529927617000, y: 6225.17 },
+  { x: 1529927677000, y: 6227.08 },
+  { x: 1529927737000, y: 6232.47 },
+  { x: 1529927747000, y: 6232.25 },
 ];
 
 function renderChartAndInitLayout(props) {
@@ -49,23 +34,9 @@ function renderChartAndInitLayout(props) {
   const onLayout = R.path(['children', '1', 'children', '0', 'props', 'onLayout'], rendered.toJSON());
   const chartOnLayout = rendered.root.instance.onLayout;
 
-  chartOnLayout({
-    nativeEvent: {
-      layout: {
-        width: 300,
-        height: 200,
-      },
-    },
-  });
+  chartOnLayout({ nativeEvent: { layout: { width: 300, height: 200 } } });
   if (onLayout) {
-    onLayout({
-      nativeEvent: {
-        layout: {
-          width: 300,
-          height: 200,
-        },
-      },
-    });
+    onLayout({ nativeEvent: { layout: { width: 300, height: 200 } } });
   }
 
   return rendered;
@@ -82,12 +53,7 @@ it('works on empty data', () => {
 });
 
 it('works on single point', () => {
-  const singlePointData = [
-    {
-      x: 1529853864000,
-      y: 5894.84,
-    },
-  ];
+  const singlePointData = [{ x: 1529853864000, y: 5894.84 }];
   const rendered = renderer.create(<Chart data={singlePointData} />).toJSON();
   expect(rendered).toBeTruthy();
 });
@@ -103,12 +69,7 @@ it('handles touch', (done) => {
   tooltip.instance.onRootRef({ setNativeProps: rootSpy });
   tooltip.instance.onMarkRef({ setNativeProps: markSpy });
 
-  rendered.root.instance.onStartTouch({
-    nativeEvent: {
-      locationX: 10,
-      locationY: 15,
-    },
-  });
+  rendered.root.instance.onStartTouch({ nativeEvent: { locationX: 10, locationY: 15 } });
 
   expect(rootSpy).toHaveBeenCalledTimes(2);
   expect(rootSpy.mock.calls[1][0]).toBeDeepCloseTo({ matrix: [1, 0, 0, 1, 9.9999999635611, 0] });
@@ -129,14 +90,11 @@ it('handles touch', (done) => {
   expect(tooltip.instance.state.visible).toBe(true);
   rendered.root.instance.onEndTouch();
 
-  setTimeout(
-    () => {
-      expect(tooltip.instance.state.visible).toBe(false);
-      expect(tooltip.findByType(G).props.opacity).toBe(0);
-      done();
-    },
-    60,
-  );
+  setTimeout(() => {
+    expect(tooltip.instance.state.visible).toBe(false);
+    expect(tooltip.findByType(G).props.opacity).toBe(0);
+    done();
+  }, 60);
 });
 
 describe('rendered custom strokeWidth', () => {
@@ -213,10 +171,7 @@ describe('render different amount of data', () => {
     let index = 1;
     while (newData.length < time) {
       const { x } = testData[testData.length - 1];
-      const point = {
-        x: x + index,
-        y: testData[testData.length - 1].y,
-      };
+      const point = { x: x + index, y: testData[testData.length - 1].y };
       newData.push(point);
       index += 1;
     }
@@ -229,16 +184,12 @@ describe('render different amount of data', () => {
   }, times);
 });
 
-type PseudoComponentState = {
-  data: Array<Point>
-};
+type PseudoComponentState = { data: Array<Point> };
 
 class WrappedChart extends PureComponent<any, PseudoComponentState> {
   constructor(props: any) {
     super(props);
-    this.state = {
-      data,
-    };
+    this.state = { data };
   }
 
   render() {
@@ -256,14 +207,7 @@ function renderWrappedChart(props = {}) {
   const chart = rendered.root.findByType(Chart);
   expect(chart.instance.onLayout).toBeTruthy();
   if (chart.instance.onLayout) {
-    chart.instance.onLayout({
-      nativeEvent: {
-        layout: {
-          width: 300,
-          height: 200,
-        },
-      },
-    });
+    chart.instance.onLayout({ nativeEvent: { layout: { width: 300, height: 200 } } });
   }
 
   return rendered;
@@ -280,33 +224,17 @@ it('tooltip removed from render if not in data', () => {
   const chart = rendered.root.findByType(Chart);
   expect(chart.instance.onTouch).toBeTruthy();
   if (chart.instance.onTouch) {
-    chart.instance.onTouch({
-      nativeEvent: {
-        locationX: 1,
-        locationY: 2,
-      },
-    });
+    chart.instance.onTouch({ nativeEvent: { locationX: 1, locationY: 2 } });
   }
 
   const pathSpy = jest.fn();
   const animatedChart = rendered.root.findByType(AnimatedChart);
-  animatedChart.instance.onPathRef({
-    setNativeProps: pathSpy,
-  });
+  animatedChart.instance.onPathRef({ setNativeProps: pathSpy });
 
   expect(tooltip.findByType(G).props.opacity).toBe(1);
 
   rendered.root.instance.setState({
-    data: [
-      {
-        x: 1529927747000 + 1000000,
-        y: 6219.01,
-      },
-      {
-        x: 1529927747000 + 2000000,
-        y: 6225.17,
-      },
-    ],
+    data: [{ x: 1529927747000 + 1000000, y: 6219.01 }, { x: 1529927747000 + 2000000, y: 6225.17 }],
   });
 
   expect(tooltip.findByType(G).props.opacity).toBe(0);
@@ -325,7 +253,11 @@ it('changing layout wont cause changing tooltip position', () => {
   const { locationX, locationY } = event.nativeEvent;
   const { width, height } = rendered.root.instance.state;
   const expectedPosition = screenToDataPosition({
-    data, locationX, locationY, width, height,
+    data,
+    locationX,
+    locationY,
+    width,
+    height,
   });
   const { onTouch } = rendered.root.instance;
   onTouch(event);
@@ -341,7 +273,11 @@ it('changing layout wont cause changing tooltip position', () => {
   }
 
   const nextPosition = screenToDataPosition({
-    data, locationX, locationY, width: newWidth, height: newHeight,
+    data,
+    locationX,
+    locationY,
+    width: newWidth,
+    height: newHeight,
   });
   expect(nextPosition).toEqual(expectedPosition);
 });
@@ -367,46 +303,26 @@ it('animated transition', () => {
   const updater = jest.fn();
   global.requestAnimationFrame = updater;
 
-  rendered.root.instance.setState({
-    data: [
-      ...R.takeLast(4, data),
-      {
-        x: 1529927747000 + 600000,
-        y: 6232.25,
-      },
-    ],
-  });
+  rendered.root.instance.setState({ data: [...R.takeLast(4, data), { x: 1529927747000 + 600000, y: 6232.25 }] });
 
   expect(tooltip.findByType(G).props.opacity).toBe(0);
 
   expect(pathSpy).toHaveBeenCalledTimes(1);
 
   expect(updater).toHaveBeenCalledTimes(1);
-  expect(pathSpy.mock.calls[0]).toBeDeepCloseTo([
-    {
-      matrix: [1, 0, 0, 1, 221.91780821917808, 0],
-    },
-  ]);
+  expect(pathSpy.mock.calls[0]).toBeDeepCloseTo([{ matrix: [1, 0, 0, 1, 221.91780821917808, 0] }]);
 
   mockedTime = 250;
   updater.mock.calls[0][0]();
   expect(updater).toHaveBeenCalledTimes(2);
   expect(pathSpy).toHaveBeenCalledTimes(2);
-  expect(pathSpy.mock.calls[1]).toBeDeepCloseTo([
-    {
-      matrix: [1, 0, 0, 1, 27.73972602739726, 0],
-    },
-  ]);
+  expect(pathSpy.mock.calls[1]).toBeDeepCloseTo([{ matrix: [1, 0, 0, 1, 27.73972602739726, 0] }]);
 
   mockedTime = 500;
   updater.mock.calls[1][0]();
   expect(updater).toHaveBeenCalledTimes(2);
   expect(pathSpy).toHaveBeenCalledTimes(3);
-  expect(pathSpy.mock.calls[2]).toBeDeepCloseTo([
-    {
-      matrix: [1, 0, 0, 1, 0, 0],
-    },
-  ]);
+  expect(pathSpy.mock.calls[2]).toBeDeepCloseTo([{ matrix: [1, 0, 0, 1, 0, 0] }]);
 
   global.requestAnimationFrame = oldRequestAnimationFrame;
 });
@@ -419,9 +335,7 @@ it('end dot animation', () => {
   animatedChart.instance.onPathRef({ setNativeProps: jest.fn() });
 
   const circleSpy = jest.fn();
-  endDot.instance.onCircleRef({
-    setNativeProps: circleSpy,
-  });
+  endDot.instance.onCircleRef({ setNativeProps: circleSpy });
 
   let mockedTime = 0;
   endDot.instance.getCurrentTimeMS = () => mockedTime;
@@ -443,22 +357,12 @@ it('end dot animation', () => {
 
   updater.mock.calls[0][0]();
   expect(circleSpy).toHaveBeenCalledTimes(1);
-  expect(circleSpy.mock.calls[0]).toBeDeepCloseTo([
-    {
-      matrix: [1, 0, 0, 1, 0, 0],
-      opacity: 1,
-    },
-  ]);
+  expect(circleSpy.mock.calls[0]).toBeDeepCloseTo([{ matrix: [1, 0, 0, 1, 0, 0], opacity: 1 }]);
 
   mockedTime = 800;
   updater.mock.calls[1][0]();
   expect(circleSpy).toHaveBeenCalledTimes(2);
-  expect(circleSpy.mock.calls[1]).toBeDeepCloseTo([
-    {
-      matrix: [4.5, 0, 0, 4.5, 0, 0],
-      opacity: 0,
-    },
-  ]);
+  expect(circleSpy.mock.calls[1]).toBeDeepCloseTo([{ matrix: [4.5, 0, 0, 4.5, 0, 0], opacity: 0 }]);
 
   global.requestAnimationFrame = oldRequestAnimationFrame;
   global.setTimeout = oldSetTimeout;
@@ -472,9 +376,7 @@ it('end dot animation cancel', () => {
   animatedChart.instance.onPathRef({ setNativeProps: jest.fn() });
 
   const circleSpy = jest.fn();
-  endDot.instance.onCircleRef({
-    setNativeProps: circleSpy,
-  });
+  endDot.instance.onCircleRef({ setNativeProps: circleSpy });
 
   const oldRequestAnimationFrame = global.requestAnimationFrame;
   const oldCancelAnimationFrame = global.cancelAnimationFrame;
@@ -536,11 +438,7 @@ it('day view works', () => {
 });
 
 it('rate section works', () => {
-  const testData = [
-    { x: 100, y: 10000 },
-    { x: 150, y: 15000 },
-    { x: 200, y: 5000.55 },
-  ];
+  const testData = [{ x: 100, y: 10000 }, { x: 150, y: 15000 }, { x: 200, y: 5000.55 }];
   const gradientOptions = R.clone(defaultGradients);
   const rendered = renderChartAndInitLayout({ data: testData, gradientOptions });
 
@@ -561,12 +459,7 @@ it('rate section works', () => {
   tooltip.instance.onMarkRef({ setNativeProps: jest.fn() });
   const chart = rendered.root.findByType(Chart);
   if (chart.instance.onTouch) {
-    chart.instance.onTouch({
-      nativeEvent: {
-        locationX: 100,
-        locationY: 2,
-      },
-    });
+    chart.instance.onTouch({ nativeEvent: { locationX: 100, locationY: 2 } });
   }
 
   if (text) {

@@ -6,7 +6,6 @@ import {
   View, TouchableHighlight, Text, StyleSheet,
 } from 'react-native';
 import Svg, { Line } from 'react-native-svg';
-import { currencyTitles } from './currencyHelpers';
 
 const inactiveColor = 'rgba(255, 255, 255, 0.4)';
 
@@ -34,10 +33,12 @@ const styleSheet = StyleSheet.create({
 type TogglePeriodProps = {
   value: string,
   setValue: string => void,
-  currencies: Array<string>
+  currencies: {
+    [string]: string,
+  },
 };
 
-function DecorationLine(props: {style: any}) {
+function DecorationLine(props: { style: any }) {
   return (
     <Svg style={{ width: 30, height: 1, ...props.style }}>
       <Line x1="0" y1="0" x2="30" y2="0" strokeWidth="1" stroke={inactiveColor} />
@@ -50,26 +51,20 @@ function ToggleCurrency(props: TogglePeriodProps) {
   return (
     <View style={styleSheet.buttonsView}>
       <DecorationLine style={{ marginRight: 5 }} />
-      {
-        R.map(
-          currency => (
-            <TouchableHighlight
-              key={currency}
-              style={styleSheet.button}
-              color="transparent"
-              underlayColor="transparent"
-              onPress={() => {
-                setValue(currency);
-              }}
-            >
-              <Text style={value === currency ? styleSheet.activeText : styleSheet.text}>
-                {currencyTitles[currency] || currency}
-              </Text>
-            </TouchableHighlight>
-          ),
-          currencies,
-        )
-      }
+      {R.pipe(
+        R.mapObjIndexed((label, slug) => (
+          <TouchableHighlight
+            key={slug}
+            style={styleSheet.button}
+            color="transparent"
+            underlayColor="transparent"
+            onPress={() => setValue(slug)}
+          >
+            <Text style={value === slug ? styleSheet.activeText : styleSheet.text}> {label} </Text>
+          </TouchableHighlight>
+        )),
+        R.values,
+      )(currencies)}
       <DecorationLine style={{ marginLeft: 5 }} />
     </View>
   );

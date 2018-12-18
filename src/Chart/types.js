@@ -2,7 +2,7 @@
 
 type Point = {
   x: number,
-  y: number
+  y: number,
 };
 
 type Opacity = string | number;
@@ -10,8 +10,8 @@ type Opacity = string | number;
 type PressEvent = {
   nativeEvent: {
     locationX: number,
-    locationY: number
-  }
+    locationY: number,
+  },
 };
 
 type LayoutEvent = {
@@ -20,26 +20,21 @@ type LayoutEvent = {
       x: number,
       y: number,
       width: number,
-      height: number
-    }
-  }
+      height: number,
+    },
+  },
 };
 
 type WH = {
   width: number | string,
-  height: number | string
+  height: number | string,
 };
 
 type Range = {
   min: number,
-  max: number
-}
+  max: number,
+};
 
 export type {
-  Point,
-  Opacity,
-  PressEvent,
-  LayoutEvent,
-  WH,
-  Range,
+  Point, Opacity, PressEvent, LayoutEvent, WH, Range,
 };

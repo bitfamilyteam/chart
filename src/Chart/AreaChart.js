@@ -11,10 +11,7 @@ import type { Point } from './types';
 
 function combineData(left: Array<Point>, right: Array<Point>): Array<Point> {
   const diff = R.differenceWith(R.eqProps('x'), left, right);
-  return R.concat(...R.sortBy(
-    part => part[0] && part[0].x,
-    [diff, right],
-  ));
+  return R.concat(...R.sortBy(part => part[0] && part[0].x, [diff, right]));
 }
 
 type CreatePathsParams = {
@@ -22,7 +19,7 @@ type CreatePathsParams = {
   convertX: number => number,
   convertY: number => number,
   yMin: number,
-}
+};
 
 type AreaChartType = {
   width: number,
@@ -40,14 +37,11 @@ type AreaChartType = {
     right?: number,
   },
   shadowHeight?: number,
-  children: any
-}
+  children: any,
+};
 
 class AreaChart extends React.PureComponent<AreaChartType> {
-  static defaultProps = {
-    svg: {},
-    contentInset: {},
-  };
+  static defaultProps = { svg: {}, contentInset: {} };
 
   createPaths(params: CreatePathsParams) {
     const {
@@ -56,15 +50,10 @@ class AreaChart extends React.PureComponent<AreaChartType> {
     const { oldData } = this.props;
     const fullData = combineData(data, oldData);
 
-    const shadowHeight = this.props.shadowHeight || (1.5 * this.props.svg.strokeWidth);
-    const shadowPoints = [
-      ...fullData,
-      ...R.map(
-        ({ x, y }) => ({ x, y, shadowHeight }),
-        R.reverse(fullData),
-      ),
-    ];
-    const shadow = shape.area()
+    const shadowHeight = this.props.shadowHeight || 1.5 * this.props.svg.strokeWidth;
+    const shadowPoints = [...fullData, ...R.map(({ x, y }) => ({ x, y, shadowHeight }), R.reverse(fullData))];
+    const shadow = shape
+      .area()
       .x(point => convertX(point.x))
       .y0(convertY(0))
       .y1(point => convertY(point.y) + (point.shadowHeight || 0))
@@ -72,38 +61,39 @@ class AreaChart extends React.PureComponent<AreaChartType> {
       .curve(shape.curveLinear)(shadowPoints);
 
     const areaData = [
-      { x: fullData[0].x, y: yMin },
+      {
+        x: R.head(fullData).x,
+        y: yMin,
+      },
       ...fullData,
-      { x: fullData[fullData.length - 1].x, y: yMin },
+      {
+        x: R.last(fullData).x,
+        y: yMin,
+      },
     ];
-    const area = shape.area()
-      .x(point => convertX(point.x))
+    const area = shape
+      .area()
+      .x(({ x }) => convertX(x))
       .y0(convertY(0))
-      .y1(point => convertY(point.y))
-      .defined(item => typeof item.y === 'number')
+      .y1(({ y }) => convertY(y))
+      .defined(({ y }) => typeof y === 'number')
       .curve(shape.curveLinear)(areaData);
 
-    const path = shape.line()
-      .x(point => convertX(point.x))
-      .y(point => convertY(point.y))
-      .defined(item => typeof item.y === 'number')
+    const path = shape
+      .line()
+      .x(({ x }) => convertX(x))
+      .y(({ y }) => convertY(y))
+      .defined(({ y }) => typeof y === 'number')
       .curve(shape.curveLinear)(fullData);
 
-    return {
-      path,
-      shadow,
-      area,
-    };
+    return { path, shadow, area };
   }
 
   render() {
     const {
       data,
       contentInset: {
-        top = 0,
-        bottom = 0,
-        left = 0,
-        right = 0,
+        top = 0, bottom = 0, left = 0, right = 0,
       },
       gridMax,
       gridMin,
@@ -113,67 +103,50 @@ class AreaChart extends React.PureComponent<AreaChartType> {
 
     const { width, height } = this.props;
 
-    if (data.length === 0) {
+    if (!(data && data.length)) {
       return <View />;
     }
 
-    const yValues = data.map(item => item.y);
-    const xValues = data.map(item => item.x);
+    const yValues = R.pluck('y')(data);
+    const xValues = R.pluck('x')(data);
 
-    const yExtent = array.extent([...yValues, gridMin, gridMax]);
-    const xExtent = array.extent([...xValues]);
+    const [yMin, yMax] = array.extent([...yValues, gridMin, gridMax]);
+    const [xMin, xMax] = array.extent([...xValues]);
 
-    const yMin = yExtent[0];
-    const yMax = yExtent[1];
-    const xMin = xExtent[0];
-    const xMax = xExtent[1];
-
-    const convertY = scale.scaleLinear()
+    const convertY = scale
+      .scaleLinear()
       .domain([yMin, yMax])
       .range([height - bottom, top]);
 
-    const convertX = scale.scaleLinear()
+    const convertX = scale
+      .scaleLinear()
       .domain([xMin, xMax])
       .range([left, width - right]);
 
     const paths = this.createPaths({
-      data, convertX, convertY, yMin,
+      data,
+      convertX,
+      convertY,
+      yMin,
     });
 
     return (
       <View>
-        {
-          height > 0 && width > 0 && (
-            <Svg style={{ height, width }}>
-              <Path
-                fill={svg.fill}
-                d={paths.area}
-              />
-              <Path
-                fill={svg.stroke}
-                stroke="none"
-                opacity="0.3"
-                d={paths.shadow}
-              />
-              <Path
-                strokeWidth={svg.strokeWidth}
-                stroke={svg.stroke}
-                opacity="0.8"
-                strokeLinejoin="round"
-                fill="none"
-                d={paths.path}
-              />
-              {
-                  React.Children.map(children, (child) => {
-                    if (child) {
-                      return React.cloneElement(child, { convertX, convertY });
-                    }
-                    return null;
-                  })
-              }
-            </Svg>
-          )
-        }
+        {height > 0 && width > 0 && (
+          <Svg style={{ height, width }}>
+            <Path fill={svg.fill} d={paths.area} />
+            <Path fill={svg.stroke} stroke="none" opacity="0.3" d={paths.shadow} />
+            <Path
+              strokeWidth={svg.strokeWidth}
+              stroke={svg.stroke}
+              opacity="0.8"
+              strokeLinejoin="round"
+              fill="none"
+              d={paths.path}
+            />
+            {React.Children.map(children, child => (child ? React.cloneElement(child, { convertX, convertY }) : null))}
+          </Svg>
+        )}
       </View>
     );
   }

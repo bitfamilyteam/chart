@@ -1,11 +1,12 @@
 import R from 'ramda';
 import moment from 'moment';
 import React from 'react';
-import { Text, View, Image, Platform, StyleSheet } from 'react-native';
+import {
+  Text, View, Image, Platform, StyleSheet,
+} from 'react-native';
 import TogglePeriod from './src/TogglePeriod';
 import ToggleCurrency from './src/ToggleCurrency';
 import Chart from './src/Chart';
-import { currencyKeys } from './src/currencyHelpers';
 import SavlLogo from './src/SavlLogo';
 import backgroundImage from './resources/background.jpg';
 
@@ -31,12 +32,8 @@ function getTimeLimit(time, period) {
   }
 }
 
-function prepareCurrencies(currencies) {
-  return R.filter(key => R.contains(key, currencies), currencyKeys);
-}
-
 function filterData(data, period, page) {
-  if (data.length) {
+  if (data && data.length) {
     const lastTime = moment(data[data.length - 1].x);
     lastTime.subtract(page, 'day');
     const timeLimit = getTimeLimit(lastTime, period);
@@ -97,28 +94,19 @@ class ChartPage extends React.Component {
     };
   }
 
-  setPeriod = period => {
-    this.setState({ period });
-  };
+  setPeriod = period => this.setState({ period });
 
-  setCurrency = pickedCurrency => {
-    this.setState({ pickedCurrency });
-
-    const { onCurrencyChange } = this.props;
-    if (onCurrencyChange) {
-      onCurrencyChange(pickedCurrency);
-    }
-  };
+  setCurrency = pickedCurrency =>
+    this.setState({ pickedCurrency }, () => this.props.onCurrencyChange && this.props.onCurrencyChange(pickedCurrency));
 
   render() {
     const {
-      props: { data, bottomOffset },
-      state: { period, page, pickedCurrency, showChart },
+      props: { data, bottomOffset, currencies },
+      state: { period, page, pickedCurrency },
     } = this;
     const styles = stylesPrepared(bottomOffset);
     if (!data) return <Text>Loading...</Text>;
 
-    const currencies = prepareCurrencies(R.keys(data));
     const currency = data[pickedCurrency] ? pickedCurrency : currencies[0];
     const currencyData = R.path([currency, 'usd', 'ratesData'], data);
 
@@ -126,7 +114,7 @@ class ChartPage extends React.Component {
     const isDeclining = filteredData.length >= 2 && filteredData[0].y > filteredData[filteredData.length - 1].y;
     return (
       <View style={styles.container}>
-        {Platform.OS === 'ios' && <Image style={styles.bg} source={backgroundImage} />}
+        <Image style={styles.bg} source={backgroundImage} />
         <View style={styles.chartWrapper}>
           <Chart data={filteredData} period={period} currency={currency} contentInset={styles.chart} />
           <View style={styles.bottom}>

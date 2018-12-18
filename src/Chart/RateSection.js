@@ -9,12 +9,10 @@ type RateSectionProps = {
   data: Array<Point>,
   period?: string,
   height?: number,
-  fontFamily: string
-}
+  fontFamily: string,
+};
 
-type RateSectionState = {
-  position?: number
-}
+type RateSectionState = { position?: number };
 
 function prepareValue(value: number): string {
   const str = Math.abs(value).toFixed(2);
@@ -26,23 +24,17 @@ function preparePercents(value: number): string {
 }
 
 function getRateStrings(props: RateSectionProps, position?: number) {
-  const { data } = props;
-  if (data.length <= 1) {
-    return {
-      mainString: '',
-      subString: '',
-    };
+  const { data, period } = props;
+  if (data && data.length <= 1) {
+    return { mainString: '', subString: '' };
   }
 
-  const start = data[0].y;
-  let end = data[data.length - 1].y;
+  const start = R.head(data).y;
+  let end = R.last(data).y;
   if (position) {
     const limit: number = position;
-    const index = R.findLastIndex(
-      ({ x }) => x <= limit,
-      data,
-    );
-    if (index >= 0 && index < data.length - 1) {
+    const index = R.findLastIndex(({ x }) => x <= limit, data);
+    if (index >= 0 && data && index < data.length - 1) {
       const left = data[index];
       const right = data[index + 1];
       const phase = (position - left.x) / (right.x - left.x);
@@ -54,25 +46,18 @@ function getRateStrings(props: RateSectionProps, position?: number) {
   const value = prepareValue(end - start);
   const deltaString = `${start > end ? '-' : '+'} $${value}`;
 
-  if (props.period === 'all') {
-    return {
-      mainString,
-      subString: deltaString,
-    };
+  if (period === 'all') {
+    return { mainString, subString: deltaString };
   }
 
-  const percents = preparePercents((end - start) / start * 100);
-  return {
-    mainString,
-    subString: `${deltaString}(${percents}%)`,
-  };
+  const percents = preparePercents(((end - start) / start) * 100);
+  return { mainString, subString: `${deltaString}(${percents}%)` };
 }
 
 class RateSection extends React.PureComponent<RateSectionProps, RateSectionState> {
   constructor(props: RateSectionProps) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
   }
 
   setPosition(position?: number) {
@@ -81,10 +66,7 @@ class RateSection extends React.PureComponent<RateSectionProps, RateSectionState
 
   render() {
     const { fontFamily } = this.props;
-    const {
-      mainString,
-      subString,
-    } = getRateStrings(this.props, this.state.position);
+    const { mainString, subString } = getRateStrings(this.props, this.state.position);
 
     const [wholeSum, partSum] = mainString.split('.');
     const textStyle = { color: 'white', fontSize: 17, fontFamily: 'QuickFuse' };
@@ -92,26 +74,21 @@ class RateSection extends React.PureComponent<RateSectionProps, RateSectionState
     return (
       <View style={{ height: this.props.height || 60, width: '100%' }}>
         <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'center' }}>
-          <Text style={textStyle}>
-          $
-          </Text>
-          <Text style={{
-            ...textStyle,
-            fontSize: 36,
-            position: 'relative',
-            top: 2,
-          }}
+          <Text style={textStyle}>$</Text>
+          <Text
+            style={{
+              ...textStyle,
+              fontSize: 36,
+              position: 'relative',
+              top: 2,
+            }}
           >
             {wholeSum}.
           </Text>
-          <Text style={textStyle}>
-            {partSum}
-          </Text>
+          <Text style={textStyle}>{partSum}</Text>
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-          <Text style={{ ...textStyle, fontFamily }}>
-            {subString}
-          </Text>
+          <Text style={{ ...textStyle, fontFamily }}>{subString}</Text>
         </View>
       </View>
     );

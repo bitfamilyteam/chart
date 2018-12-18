@@ -10,13 +10,13 @@ import TogglePeriodStyle from './TogglePeriod.style';
 type Period = {
   title: string,
   type: string,
-  diff: number
+  diff: number,
 };
 
 type TogglePeriodProps = {
   value: string,
   setValue: string => void,
-  isDeclining?: boolean
+  isDeclining?: boolean,
 };
 
 const periods = [
@@ -45,25 +45,15 @@ function TogglePeriod(props: TogglePeriodProps) {
         title={title}
         color="transparent"
         underlayColor="transparent"
-        onPress={() => {
-          setValue(period.value);
-        }}
+        onPress={() => setValue(period.value)}
       >
         <View style={style.textBackground}>
-          <Text
-            style={isDeclining ? style.decliningText : style.growingText}
-          >
-            {title}
-          </Text>
+          <Text style={isDeclining ? style.decliningText : style.growingText}>{title}</Text>
         </View>
       </TouchableHighlight>
     );
   }, periods);
-  return (
-    <View style={commonStyle.buttonsView}>
-      {PeriodToggleButtonsView}
-    </View>
-  );
+  return <View style={commonStyle.buttonsView}>{PeriodToggleButtonsView}</View>;
 }
 
 export default TogglePeriod;
