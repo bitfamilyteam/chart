@@ -157,7 +157,7 @@ class AnimatedChart extends React.PureComponent<AnimatedChartProps, AnimatedChar
     }
 
     const { data } = this.props;
-    const dotVisible = R.contains(this.props.period, ['live', 'day']);
+    const dotVisible = R.includes(this.props.period, ['live', 'day']);
 
     return (
       <AreaChart {...props} animating oldData={oldData}>
