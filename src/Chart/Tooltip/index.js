@@ -44,7 +44,7 @@ class Tooltip extends React.PureComponent<TooltipProps, { visible: boolean }> {
     }
 
     const index = bounds.ge(data, { x: position }, (left, right) => left.x - right.x);
-
+    if (index - 1 < 0) return null;
     const start = data[index - 1];
     const end = data[index];
     const rate = (position - start.x) / (end.x - start.x);
