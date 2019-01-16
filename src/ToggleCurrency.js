@@ -8,7 +8,7 @@ import {
 
 const activeColor = '#ffffff';
 const inactiveColor = `${activeColor}66`;
-const { width } = Dimensions.get('window');
+const { width: windowWidth } = Dimensions.get('window');
 const styleSheet = StyleSheet.create({
   button: {
     justifyContent: 'center',
@@ -26,6 +26,12 @@ const styleSheet = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
   },
+  stretchedContainer: {
+    flex: 1,
+  },
+  spaceAroundLabels: {
+    marginHorizontal: 10,
+  },
 });
 
 type TogglePeriodProps = {
@@ -39,19 +45,23 @@ type TogglePeriodProps = {
 type TogglePeriodState = {
   currenciesList: Array<{ slug: string, label: string }>,
   selected: string,
-  checkWidth: number,
+  labelsWidth: number,
 };
 
 class ToggleCurrency extends Component<TogglePeriodProps, TogglePeriodState> {
   constructor(props) {
     super(props);
+
+    const currenciesList = R.pipe(
+      R.mapObjIndexed((label, slug) => ({ slug, label })),
+      R.values,
+    )(props.currencies);
+    const selected = props.value;
+
     this.state = {
-      currenciesList: R.pipe(
-        R.mapObjIndexed((label, slug) => ({ slug, label })),
-        R.values,
-      )(props.currencies),
-      selected: props.value,
-      checkWidth: 0,
+      currenciesList,
+      selected,
+      labelsWidth: 0,
     };
   }
 
@@ -62,9 +72,11 @@ class ToggleCurrency extends Component<TogglePeriodProps, TogglePeriodState> {
       props: { value },
       state: { currenciesList },
     } = this;
-    const index = R.findIndex(R.propEq('slug', value))(currenciesList);
-    const length = R.length(currenciesList);
-    if (this.flatList && index > length / 2) {
+
+    const index = R.findIndex(({ slug }) => slug === value)(currenciesList);
+    const halfLength = currenciesList.length / 2;
+
+    if (this.flatList && index > halfLength) {
       setTimeout(() => this.flatList.scrollToEnd(), 100);
     }
   }
@@ -76,9 +88,9 @@ class ToggleCurrency extends Component<TogglePeriodProps, TogglePeriodState> {
 
   render() {
     const {
-      state: { currenciesList, selected, checkWidth },
+      state: { currenciesList, selected, labelsWidth },
     } = this;
-    const isWithMargins = checkWidth > width;
+    const isWithScroll = labelsWidth > windowWidth;
     return (
       <FlatList
         data={currenciesList}
@@ -87,22 +99,19 @@ class ToggleCurrency extends Component<TogglePeriodProps, TogglePeriodState> {
         keyExtractor={R.prop('slug')}
         ref={ref => (this.flatList = ref)}
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={[styleSheet.buttonsView, !isWithMargins && { flex: 1 }]}
-        onLayout={({ nativeEvent }) => console.log({ nativeEvent })}
-        scrollEnabled={isWithMargins}
+        contentContainerStyle={[styleSheet.buttonsView, !isWithScroll && styleSheet.stretchedContainer]}
+        scrollEnabled={isWithScroll}
         renderItem={({ item: { label, slug } }) => (
           <TouchableHighlight
-            style={[styleSheet.button, isWithMargins && { marginHorizontal: 10 }]}
+            style={[styleSheet.button, isWithScroll && styleSheet.spaceAroundLabels]}
             color="transparent"
             underlayColor="transparent"
             onPress={() => this.changeCurrency(slug)}
             onLayout={({
               nativeEvent: {
-                layout: { width: w },
+                layout: { width },
               },
-            }) => {
-              this.setState(({ checkWidth: cw }) => ({ checkWidth: cw + w + 20 }));
-            }}
+            }) => this.setState(prevState => ({ labelsWidth: prevState.labelsWidth + width + 20 }))}
           >
             <Text style={selected === slug ? styleSheet.activeText : styleSheet.text}>{label}</Text>
           </TouchableHighlight>
