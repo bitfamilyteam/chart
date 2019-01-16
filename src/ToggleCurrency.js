@@ -1,17 +1,16 @@
 // @flow
 
 import R from 'ramda';
-import React from 'react';
+import React, { Component, type ElementRef } from 'react';
 import {
-  View, TouchableHighlight, Text, StyleSheet,
+  TouchableHighlight, Text, StyleSheet, Dimensions, FlatList,
 } from 'react-native';
-import Svg, { Line } from 'react-native-svg';
 
-const inactiveColor = 'rgba(255, 255, 255, 0.4)';
-
+const activeColor = '#ffffff';
+const inactiveColor = `${activeColor}66`;
+const { width: windowWidth } = Dimensions.get('window');
 const styleSheet = StyleSheet.create({
   button: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -21,12 +20,17 @@ const styleSheet = StyleSheet.create({
   },
   activeText: {
     fontSize: 17,
-    color: 'white',
+    color: activeColor,
   },
   buttonsView: {
-    flex: 1,
-    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  stretchedContainer: {
+    flex: 1,
+  },
+  spaceAroundLabels: {
+    marginHorizontal: 10,
   },
 });
 
@@ -38,36 +42,83 @@ type TogglePeriodProps = {
   },
 };
 
-function DecorationLine(props: { style: any }) {
-  return (
-    <Svg style={{ width: 30, height: 1, ...props.style }}>
-      <Line x1="0" y1="0" x2="30" y2="0" strokeWidth="1" stroke={inactiveColor} />
-    </Svg>
-  );
-}
+type TogglePeriodState = {
+  currenciesList: Array<{ slug: string, label: string }>,
+  selected: string,
+  labelsWidth: number,
+};
 
-function ToggleCurrency(props: TogglePeriodProps) {
-  const { value, setValue, currencies } = props;
-  return (
-    <View style={styleSheet.buttonsView}>
-      <DecorationLine style={{ marginRight: 5 }} />
-      {R.pipe(
-        R.mapObjIndexed((label, slug) => (
+class ToggleCurrency extends Component<TogglePeriodProps, TogglePeriodState> {
+  constructor(props) {
+    super(props);
+
+    const currenciesList = R.pipe(
+      R.mapObjIndexed((label, slug) => ({ slug, label })),
+      R.values,
+    )(props.currencies);
+    const selected = props.value;
+
+    this.state = {
+      currenciesList,
+      selected,
+      labelsWidth: 0,
+    };
+  }
+
+  flatList: ElementRef<FlatList>;
+
+  componentDidMount() {
+    const {
+      props: { value },
+      state: { currenciesList },
+    } = this;
+
+    const index = R.findIndex(({ slug }) => slug === value)(currenciesList);
+    const halfLength = currenciesList.length / 2;
+
+    if (this.flatList && index > halfLength) {
+      setTimeout(() => this.flatList.scrollToEnd(), 100);
+    }
+  }
+
+  changeCurrency = (slug) => {
+    this.props.setValue(slug);
+    this.setState({ selected: slug });
+  };
+
+  render() {
+    const {
+      state: { currenciesList, selected, labelsWidth },
+    } = this;
+    const isWithScroll = labelsWidth > windowWidth;
+    return (
+      <FlatList
+        data={currenciesList}
+        extraData={selected}
+        horizontal
+        keyExtractor={R.prop('slug')}
+        ref={ref => (this.flatList = ref)}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={[styleSheet.buttonsView, !isWithScroll && styleSheet.stretchedContainer]}
+        scrollEnabled={isWithScroll}
+        renderItem={({ item: { label, slug } }) => (
           <TouchableHighlight
-            key={slug}
-            style={styleSheet.button}
+            style={[styleSheet.button, isWithScroll && styleSheet.spaceAroundLabels]}
             color="transparent"
             underlayColor="transparent"
-            onPress={() => setValue(slug)}
+            onPress={() => this.changeCurrency(slug)}
+            onLayout={({
+              nativeEvent: {
+                layout: { width },
+              },
+            }) => this.setState(prevState => ({ labelsWidth: prevState.labelsWidth + width + 20 }))}
           >
-            <Text style={value === slug ? styleSheet.activeText : styleSheet.text}> {label} </Text>
+            <Text style={selected === slug ? styleSheet.activeText : styleSheet.text}>{label}</Text>
           </TouchableHighlight>
-        )),
-        R.values,
-      )(currencies)}
-      <DecorationLine style={{ marginLeft: 5 }} />
-    </View>
-  );
+        )}
+      />
+    );
+  }
 }
 
 export default ToggleCurrency;
