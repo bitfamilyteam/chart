@@ -1,7 +1,7 @@
 // @flow
 
 import R from 'ramda';
-import moment from 'moment';
+import { moment } from '../config';
 import React from 'react';
 import type { Node } from 'react';
 import * as shape from 'd3-shape';
@@ -153,9 +153,7 @@ class Chart extends React.PureComponent<ChartProps, ChartState> {
   }
 
   render() {
-    const {
-      data, strokeWidth, tooltip, period, currency, fontFamily = getDefaultFontFamily(),
-    } = this.props;
+    const { data, strokeWidth, tooltip, period, currency, fontFamily = getDefaultFontFamily() } = this.props;
     if (!(data && data.length)) return <View />;
     const { width, height } = this.state;
     const newData = handleSingleDataPoint(data);

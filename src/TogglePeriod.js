@@ -2,9 +2,7 @@
 
 import R from 'ramda';
 import React from 'react';
-import {
-  View, TouchableHighlight, Text, StyleSheet,
-} from 'react-native';
+import { View, TouchableHighlight, Text, StyleSheet } from 'react-native';
 import TogglePeriodStyle from './TogglePeriod.style';
 
 type Period = {
@@ -17,30 +15,21 @@ type TogglePeriodProps = {
   value: string,
   setValue: string => void,
   isDeclining?: boolean,
+  locale: string,
 };
-
-const periods = [
-  { title: '\u2022 LIVE', value: 'live' },
-  { title: '1D', value: 'day' },
-  { title: '1W', value: 'week' },
-  { title: '1M', value: 'month' },
-  { title: '1Y', value: 'year' },
-  { title: 'All', value: 'all' },
-];
 
 const commonStyle = StyleSheet.create(TogglePeriodStyle());
 const activeStyle = StyleSheet.create(TogglePeriodStyle(true));
 
 function TogglePeriod(props: TogglePeriodProps) {
-  const { value, setValue, isDeclining } = props;
-  const mapIndexed = R.addIndex(R.map);
-  const PeriodToggleButtonsView = mapIndexed((period, index) => {
+  const { value, setValue, isDeclining, locale, periods } = props;
+  const PeriodToggleButtonsView = R.map(period => {
     const { title } = period;
     const style = period.value === value ? activeStyle : commonStyle;
 
     return (
       <TouchableHighlight
-        key={`PeriodToggleButton-${index}`}
+        key={`PeriodToggleButton-${title}`}
         style={style.button}
         title={title}
         color="transparent"

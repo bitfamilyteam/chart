@@ -1,7 +1,7 @@
 // @flow
 
 import R from 'ramda';
-import moment from 'moment';
+import { moment } from '../config';
 import React, { PureComponent } from 'react';
 import { View, Text } from 'react-native';
 import renderer from 'react-test-renderer';
@@ -58,7 +58,7 @@ it('works on single point', () => {
   expect(rendered).toBeTruthy();
 });
 
-it('handles touch', (done) => {
+it('handles touch', done => {
   const rendered = renderChartAndInitLayout({ data });
 
   const tooltip = rendered.root.findByType(Tooltip);
@@ -165,7 +165,7 @@ it('check gradients', () => {
 
 describe('render different amount of data', () => {
   const times = [3, 10, 100, 1000];
-  R.forEach((time) => {
+  R.forEach(time => {
     const testData = [{ x: 0, y: 910 }, { x: 1, y: 1720 }];
     const newData = testData;
     let index = 1;

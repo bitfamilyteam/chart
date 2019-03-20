@@ -16,12 +16,14 @@ const styles = (active?: boolean) => ({
     backgroundColor: active ? 'white' : 'transparent',
   },
   growingText: {
-    fontSize: 11,
+    fontSize: 10,
     color: active ? '#33333d' : 'white',
+    textAlign: 'center',
   },
   decliningText: {
-    fontSize: 11,
+    fontSize: 10,
     color: active ? '#33333d' : 'white',
+    textAlign: 'center',
   },
   buttonsView: {
     flex: 1,
