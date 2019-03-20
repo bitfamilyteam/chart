@@ -1,9 +1,9 @@
 import R from 'ramda';
-import moment from 'moment';
 import React from 'react';
 import {
   Text, View, Image, Platform, StyleSheet,
 } from 'react-native';
+import { moment, changeMomentLocale } from './src/config';
 import TogglePeriod from './src/TogglePeriod';
 import ToggleCurrency from './src/ToggleCurrency';
 import Chart from './src/Chart';
@@ -87,6 +87,7 @@ const stylesPrepared = bottomOffset =>
 class ChartPage extends React.Component {
   constructor(props) {
     super(props);
+    changeMomentLocale(props.locale);
     this.state = {
       period: 'year',
       page: 0,
@@ -101,7 +102,9 @@ class ChartPage extends React.Component {
 
   render() {
     const {
-      props: { data, bottomOffset, currencies },
+      props: {
+        data, bottomOffset, currencies, locale,
+      },
       state: { period, page, pickedCurrency },
     } = this;
     const styles = stylesPrepared(bottomOffset);
@@ -118,7 +121,7 @@ class ChartPage extends React.Component {
         <View style={styles.chartWrapper}>
           <Chart data={filteredData} period={period} currency={currency} contentInset={styles.chart} />
           <View style={styles.bottom}>
-            <TogglePeriod value={period} setValue={this.setPeriod} isDeclining={isDeclining} />
+            <TogglePeriod value={period} setValue={this.setPeriod} isDeclining={isDeclining} locale={locale} />
           </View>
           <View style={styles.top}>
             <SavlLogo />

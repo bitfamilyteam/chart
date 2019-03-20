@@ -1,6 +1,6 @@
 // @flow
 
-import moment from 'moment';
+import { moment } from '../../config';
 import formatTooltipText from './formatTooltipText';
 
 it('works for day', () => {

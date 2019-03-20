@@ -1,6 +1,6 @@
 // @flow
 
-import moment from 'moment';
+import { moment } from '../../config';
 
 function alignBy5Minutes(time: moment) {
   const minutes = Math.floor(time.get('minutes') / 5) * 5;
