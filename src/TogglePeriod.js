@@ -18,38 +18,11 @@ type TogglePeriodProps = {
   locale: string,
 };
 
-const periodTitles = {
-  ru: {
-    live: '\u2022 Live',
-    day: 'День',
-    week: 'Неделя',
-    month: 'Месяц',
-    year: 'Год',
-    all: 'Все время',
-  },
-  en: {
-    live: '\u2022 Live',
-    day: 'Day',
-    week: 'Week',
-    month: 'Month',
-    year: 'Year',
-    all: 'All',
-  },
-};
-
-const periodsList = ['live', 'day', 'week', 'month', 'year', 'all'];
-
-const periods = locale =>
-  periodsList.map(value => ({
-    title: periodTitles[locale][value],
-    value,
-  }));
-
 const commonStyle = StyleSheet.create(TogglePeriodStyle());
 const activeStyle = StyleSheet.create(TogglePeriodStyle(true));
 
 function TogglePeriod(props: TogglePeriodProps) {
-  const { value, setValue, isDeclining, locale } = props;
+  const { value, setValue, isDeclining, locale, periods } = props;
   const PeriodToggleButtonsView = R.map(period => {
     const { title } = period;
     const style = period.value === value ? activeStyle : commonStyle;
@@ -68,7 +41,7 @@ function TogglePeriod(props: TogglePeriodProps) {
         </View>
       </TouchableHighlight>
     );
-  }, periods(locale));
+  }, periods);
   return <View style={commonStyle.buttonsView}>{PeriodToggleButtonsView}</View>;
 }
 

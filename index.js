@@ -103,7 +103,7 @@ class ChartPage extends React.Component {
   render() {
     const {
       props: {
-        data, bottomOffset, currencies, locale,
+        data, bottomOffset, currencies, periods,
       },
       state: { period, page, pickedCurrency },
     } = this;
@@ -121,7 +121,7 @@ class ChartPage extends React.Component {
         <View style={styles.chartWrapper}>
           <Chart data={filteredData} period={period} currency={currency} contentInset={styles.chart} />
           <View style={styles.bottom}>
-            <TogglePeriod value={period} setValue={this.setPeriod} isDeclining={isDeclining} locale={locale} />
+            <TogglePeriod value={period} setValue={this.setPeriod} isDeclining={isDeclining} periods={periods} />
           </View>
           <View style={styles.top}>
             <SavlLogo />
