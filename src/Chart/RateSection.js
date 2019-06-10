@@ -47,11 +47,11 @@ function getRateStrings(props: RateSectionProps, position?: number) {
   const deltaString = `${start > end ? '-' : '+'} $${value}`;
 
   if (period === 'all') {
-    return { mainString, subString: deltaString };
+    return { mainString, subString: null };
   }
 
   const percents = preparePercents(((end - start) / start) * 100);
-  return { mainString, subString: `${deltaString}(${percents}%)` };
+  return { mainString, subString: `${deltaString} (${percents}%)` };
 }
 
 class RateSection extends React.PureComponent<RateSectionProps, RateSectionState> {
