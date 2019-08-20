@@ -48,16 +48,8 @@ type AnimatedChartState = {
 const ANIMATION_DURATION_MS = 500;
 
 const recountValues = data => {
-  let minThreshold = Number.MAX_SAFE_INTEGER;
-  return R.pipe(
-    R.map(el => {
-      if (minThreshold > el.y) {
-        minThreshold = el.y;
-      }
-      return el;
-    }),
-    R.map(el => ({ ...el, y: el.y - minThreshold })),
-  )(data);
+  const threshold = Math.min(...R.pluck('y', data));
+  return data.map(({ x, y }) => ({ x, y: y - threshold }));
 };
 
 class AnimatedChart extends React.PureComponent<AnimatedChartProps, AnimatedChartState> {
