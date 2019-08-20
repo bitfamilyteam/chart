@@ -112,6 +112,12 @@ class ToggleCurrency extends Component<TogglePeriodProps, TogglePeriodState> {
                 layout: { width },
               },
             }) => this.setState(prevState => ({ labelsWidth: prevState.labelsWidth + width + 20 }))}
+            hitSlop={{
+              top: 20,
+              right: 10,
+              bottom: 20,
+              left: 10,
+            }}
           >
             <Text style={selected === slug ? styleSheet.activeText : styleSheet.text}>{label}</Text>
           </TouchableHighlight>
