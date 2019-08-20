@@ -14,8 +14,8 @@ import type { Point } from './types';
 type Range = { min: number, max: number };
 
 const getTimeRange = (data: Array<Point>): Range =>
-  data
-  && data.length && {
+  data &&
+  data.length && {
     min: R.pathOr(0, ['0', 'x'], data),
     max: R.pathOr(0, [data.length - 1, 'x'], data),
   };
@@ -46,6 +46,19 @@ type AnimatedChartState = {
 };
 
 const ANIMATION_DURATION_MS = 500;
+
+const recountValues = data => {
+  let minThreshold = Number.MAX_SAFE_INTEGER;
+  return R.pipe(
+    R.map(el => {
+      if (minThreshold > el.y) {
+        minThreshold = el.y;
+      }
+      return el;
+    }),
+    R.map(el => ({ ...el, y: el.y - minThreshold })),
+  )(data);
+};
 
 class AnimatedChart extends React.PureComponent<AnimatedChartProps, AnimatedChartState> {
   path: any;
@@ -125,9 +138,7 @@ class AnimatedChart extends React.PureComponent<AnimatedChartProps, AnimatedChar
   }
 
   renderTooltip(newData: Array<Point>): Node {
-    const {
-      tooltip, position, width, height, period, fontFamily,
-    } = this.props;
+    const { tooltip, position, width, height, period, fontFamily } = this.props;
     const TooltipComponent = tooltip || Tooltip;
     return (
       <TooltipComponent
@@ -158,13 +169,14 @@ class AnimatedChart extends React.PureComponent<AnimatedChartProps, AnimatedChar
       props.gridMax = gridMax;
     }
 
-    const { data } = this.props;
+    const data = recountValues(this.props.data);
     const dotVisible = R.includes(this.props.period, ['live', 'day']);
+    props.data = data;
 
     return (
-      <AreaChart {...props} animating oldData={oldData}>
+      <AreaChart {...props} animating oldData={recountValues(oldData)}>
         {this.props.children}
-        {this.renderTooltip(this.props.data)}
+        {this.renderTooltip(data)}
         <EndDot data={data} dotVisible={dotVisible} />
       </AreaChart>
     );
