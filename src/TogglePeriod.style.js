@@ -5,7 +5,6 @@ const styles = (active?: boolean) => ({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: 40,
   },
   textBackground: {
     paddingLeft: 8,

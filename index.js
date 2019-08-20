@@ -69,17 +69,18 @@ const stylesPrepared = bottomOffset =>
       left: 8,
       right: 8,
       top: 80,
-      bottom: 80 + bottomOffset,
+      bottom: 60 + bottomOffset,
     },
     top: {
       position: 'absolute',
       top: 40,
       height: 80,
       width: '100%',
+      zIndex: 10
     },
     bottom: {
       position: 'absolute',
-      bottom: 20 + bottomOffset,
+      bottom: bottomOffset,
       width: '100%',
     },
   });
