@@ -11,7 +11,6 @@ function SavlLogo() {
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'center',
-        marginBottom: 15,
       }}
     >
       <Svg style={{ width: 86, height: 40 }}>

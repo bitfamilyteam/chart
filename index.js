@@ -74,7 +74,6 @@ const stylesPrepared = bottomOffset =>
     top: {
       position: 'absolute',
       top: 40,
-      height: 80,
       width: '100%',
       zIndex: 10
     },

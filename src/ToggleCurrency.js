@@ -2,9 +2,7 @@
 
 import R from 'ramda';
 import React, { Component, type ElementRef } from 'react';
-import {
-  TouchableHighlight, Text, StyleSheet, Dimensions, FlatList,
-} from 'react-native';
+import { TouchableHighlight, Text, StyleSheet, Dimensions, FlatList } from 'react-native';
 
 const activeColor = '#ffffff';
 const inactiveColor = `${activeColor}66`;
@@ -13,6 +11,10 @@ const styleSheet = StyleSheet.create({
   button: {
     justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: 30,
+    transform: [{
+        translateY: -15,
+    }],
   },
   text: {
     fontSize: 17,
@@ -81,7 +83,7 @@ class ToggleCurrency extends Component<TogglePeriodProps, TogglePeriodState> {
     }
   }
 
-  changeCurrency = (slug) => {
+  changeCurrency = slug => {
     this.props.setValue(slug);
     this.setState({ selected: slug });
   };
