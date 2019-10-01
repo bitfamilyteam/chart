@@ -5,7 +5,7 @@ import R from 'ramda';
 import throttle from 'lodash.throttle';
 import { G, Line, Circle } from 'react-native-svg';
 import bounds from 'binary-search-bounds';
-import extractTransform from 'react-native-svg/lib/extract/extractTransform';
+import extractTransform from 'react-native-svg/lib/commonjs/lib/extract/extractTransform';
 import type { Point } from '../types';
 
 type TooltipProps = {
