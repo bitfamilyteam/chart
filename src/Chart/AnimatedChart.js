@@ -5,7 +5,7 @@ import * as array from 'd3-array';
 import * as ease from 'd3-ease';
 import React from 'react';
 import type { Node } from 'react';
-import extractTransform from 'react-native-svg/lib/extract/extractTransform';
+import extractTransform from 'react-native-svg/lib/commonjs/lib/extract/extractTransform';
 import AreaChart from './AreaChart';
 import Tooltip from './Tooltip';
 import EndDot from './EndDot';
