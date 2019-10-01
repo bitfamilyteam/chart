@@ -81,7 +81,7 @@
     "prettier": "^1.15.3",
     "prettierrc": "^0.0.0-5",
     "react-devtools": "^3.2.3",
-    "react-native-scripts": "1.14.0",
-    "react-test-renderer": "16.3.1"
+    "react-native-scripts": "2.0.1",
+    "react-test-renderer": "16.10.1"
   }
 }
