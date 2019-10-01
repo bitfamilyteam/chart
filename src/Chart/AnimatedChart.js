@@ -14,8 +14,8 @@ import type { Point } from './types';
 type Range = { min: number, max: number };
 
 const getTimeRange = (data: Array<Point>): Range =>
-  data &&
-  data.length && {
+  data
+  && data.length && {
     min: R.pathOr(0, ['0', 'x'], data),
     max: R.pathOr(0, [data.length - 1, 'x'], data),
   };
@@ -47,7 +47,7 @@ type AnimatedChartState = {
 
 const ANIMATION_DURATION_MS = 500;
 
-const recountValues = data => {
+const recountValues = (data) => {
   const threshold = Math.min(...R.pluck('y', data));
   return data.map(({ x, y }) => ({ x, y: y - threshold }));
 };
@@ -70,23 +70,24 @@ class AnimatedChart extends React.PureComponent<AnimatedChartProps, AnimatedChar
 
   getCurrentTimeMS = () => new Date().getTime();
 
-  componentWillReceiveProps(nextProps: AnimatedChartProps) {
-    const { data } = this.props;
-    if (nextProps.data === data) return;
+  componentDidUpdate(prevProps: AnimatedChartProps) {
+    const { data, currency } = this.props;
 
-    const nextRange = getTimeRange(nextProps.data);
-    const range = getTimeRange(data);
+    if (prevProps.data !== data) {
+      const range = getTimeRange(data);
+      const prevRange = getTimeRange(prevProps.data);
+      const sameCurrency = currency === prevProps.currency;
 
-    const sameCurrency = this.props.currency === nextProps.currency;
-    if (sameCurrency && !R.equals(nextRange, range) && shouldAnimate(nextRange, range)) {
-      this.startX = range.min;
-      this.startTime = this.getCurrentTimeMS();
-      this.oldExtent = array.extent(data, R.prop('y'));
-      this.extent = array.extent(nextProps.data, R.prop('y'));
-      this.setState({ oldData: this.props.data }, this.update);
-    } else {
-      this.stopAnimation();
-      this.setState({ oldData: [] });
+      if (sameCurrency && !R.equals(prevRange, range) && shouldAnimate(prevRange, range)) {
+        this.startX = range.min;
+        this.startTime = this.getCurrentTimeMS();
+        this.oldExtent = array.extent(prevProps.data, R.prop('y'));
+        this.extent = array.extent(data, R.prop('y'));
+        this.setState({ oldData: data }, this.update);
+      } else {
+        this.stopAnimation();
+        this.setState({ oldData: [] });
+      }
     }
   }
 
@@ -130,7 +131,9 @@ class AnimatedChart extends React.PureComponent<AnimatedChartProps, AnimatedChar
   }
 
   renderTooltip(newData: Array<Point>): Node {
-    const { tooltip, position, width, height, period, fontFamily } = this.props;
+    const {
+      tooltip, position, width, height, period, fontFamily,
+    } = this.props;
     const TooltipComponent = tooltip || Tooltip;
     return (
       <TooltipComponent
