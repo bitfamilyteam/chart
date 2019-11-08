@@ -2,7 +2,9 @@
 
 import R from 'ramda';
 import React from 'react';
-import { View, TouchableHighlight, Text, StyleSheet } from 'react-native';
+import {
+  View, TouchableHighlight, Text, StyleSheet,
+} from 'react-native';
 import TogglePeriodStyle from './TogglePeriod.style';
 
 type Period = {
@@ -15,15 +17,16 @@ type TogglePeriodProps = {
   value: string,
   setValue: string => void,
   isDeclining?: boolean,
-  locale: string,
 };
 
 const commonStyle = StyleSheet.create(TogglePeriodStyle());
 const activeStyle = StyleSheet.create(TogglePeriodStyle(true));
 
 function TogglePeriod(props: TogglePeriodProps) {
-  const { value, setValue, isDeclining, locale, periods } = props;
-  const PeriodToggleButtonsView = R.map(period => {
+  const {
+    value, setValue, isDeclining, periods,
+  } = props;
+  const PeriodToggleButtonsView = R.map((period) => {
     const { title } = period;
     const style = period.value === value ? activeStyle : commonStyle;
 

@@ -75,7 +75,7 @@ const stylesPrepared = bottomOffset =>
       position: 'absolute',
       top: 40,
       width: '100%',
-      zIndex: 10
+      zIndex: 10,
     },
     bottom: {
       position: 'absolute',
@@ -103,7 +103,7 @@ class ChartPage extends React.Component {
   render() {
     const {
       props: {
-        data, bottomOffset, currencies, periods,
+        data, bottomOffset, currencies, periods, fiat,
       },
       state: { period, page, pickedCurrency },
     } = this;
@@ -111,7 +111,7 @@ class ChartPage extends React.Component {
     if (!data) return <Text>Loading...</Text>;
 
     const currency = data[pickedCurrency] ? pickedCurrency : currencies[0];
-    const currencyData = R.path([currency, 'usd', 'ratesData'], data);
+    const currencyData = R.path([currency, fiat.slug, 'ratesData'], data);
 
     const filteredData = filterData(currencyData, period, page);
     const isDeclining = filteredData.length >= 2 && filteredData[0].y > filteredData[filteredData.length - 1].y;
@@ -119,7 +119,13 @@ class ChartPage extends React.Component {
       <View style={styles.container}>
         <Image style={styles.bg} source={backgroundImage} />
         <View style={styles.chartWrapper}>
-          <Chart data={filteredData} period={period} currency={currency} contentInset={styles.chart} />
+          <Chart
+            data={filteredData}
+            period={period}
+            currency={currency}
+            fiatSign={fiat.sign}
+            contentInset={styles.chart}
+          />
           <View style={styles.bottom}>
             <TogglePeriod value={period} setValue={this.setPeriod} isDeclining={isDeclining} periods={periods} />
           </View>
