@@ -2,26 +2,32 @@
 
 import R from 'ramda';
 import React, { Component, type ElementRef } from 'react';
-import { TouchableHighlight, Text, StyleSheet, Dimensions, FlatList } from 'react-native';
+import {
+  TouchableHighlight, Text, StyleSheet, Dimensions, FlatList,
+} from 'react-native';
 
 const activeColor = '#ffffff';
 const inactiveColor = `${activeColor}66`;
 const { width: windowWidth } = Dimensions.get('window');
+const fontSize = 17;
+
 const styleSheet = StyleSheet.create({
   button: {
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 30,
-    transform: [{
+    transform: [
+      {
         translateY: -15,
-    }],
+      },
+    ],
   },
   text: {
-    fontSize: 17,
+    fontSize,
     color: inactiveColor,
   },
   activeText: {
-    fontSize: 17,
+    fontSize,
     color: activeColor,
   },
   buttonsView: {
@@ -39,31 +45,26 @@ const styleSheet = StyleSheet.create({
 type TogglePeriodProps = {
   value: string,
   setValue: string => void,
-  currencies: {
-    [string]: string,
-  },
+  currencies: Array<{ slug: string, label: string }>,
 };
 
 type TogglePeriodState = {
   currenciesList: Array<{ slug: string, label: string }>,
   selected: string,
-  labelsWidth: number,
+  isWithScroll: boolean,
 };
 
 class ToggleCurrency extends Component<TogglePeriodProps, TogglePeriodState> {
   constructor(props) {
     super(props);
-
-    const currenciesList = R.pipe(
-      R.mapObjIndexed((label, slug) => ({ slug, label })),
-      R.values,
-    )(props.currencies);
-    const selected = props.value;
+    const { currencies, value } = this.props;
+    const labelsWidth = currencies.reduce((accumulator, { symbol }) => accumulator + symbol.length * fontSize, 0);
+    const isWithScroll = labelsWidth > windowWidth;
 
     this.state = {
-      currenciesList,
-      selected,
-      labelsWidth: 0,
+      currenciesList: currencies,
+      selected: value,
+      isWithScroll,
     };
   }
 
@@ -83,47 +84,46 @@ class ToggleCurrency extends Component<TogglePeriodProps, TogglePeriodState> {
     }
   }
 
-  changeCurrency = slug => {
+  changeCurrency = (slug) => {
     this.props.setValue(slug);
     this.setState({ selected: slug });
   };
 
+  renderCurrency = ({ item: { symbol, slug } }) => {
+    const { selected, isWithScroll } = this.state;
+    return (
+      <TouchableHighlight
+        style={[styleSheet.button, isWithScroll && styleSheet.spaceAroundLabels]}
+        color="transparent"
+        underlayColor="transparent"
+        onPress={() => this.changeCurrency(slug)}
+        hitSlop={{
+          top: 20,
+          right: 10,
+          bottom: 20,
+          left: 10,
+        }}
+      >
+        <Text style={selected === slug ? styleSheet.activeText : styleSheet.text}>{symbol}</Text>
+      </TouchableHighlight>
+    );
+  };
+
   render() {
     const {
-      state: { currenciesList, selected, labelsWidth },
+      state: { currenciesList, selected, isWithScroll },
     } = this;
-    const isWithScroll = labelsWidth > windowWidth;
     return (
       <FlatList
         data={currenciesList}
         extraData={selected}
         horizontal
         keyExtractor={R.prop('slug')}
+        renderItem={this.renderCurrency}
         ref={ref => (this.flatList = ref)}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={[styleSheet.buttonsView, !isWithScroll && styleSheet.stretchedContainer]}
         scrollEnabled={isWithScroll}
-        renderItem={({ item: { label, slug } }) => (
-          <TouchableHighlight
-            style={[styleSheet.button, isWithScroll && styleSheet.spaceAroundLabels]}
-            color="transparent"
-            underlayColor="transparent"
-            onPress={() => this.changeCurrency(slug)}
-            onLayout={({
-              nativeEvent: {
-                layout: { width },
-              },
-            }) => this.setState(prevState => ({ labelsWidth: prevState.labelsWidth + width + 20 }))}
-            hitSlop={{
-              top: 20,
-              right: 10,
-              bottom: 20,
-              left: 10,
-            }}
-          >
-            <Text style={selected === slug ? styleSheet.activeText : styleSheet.text}>{label}</Text>
-          </TouchableHighlight>
-        )}
       />
     );
   }

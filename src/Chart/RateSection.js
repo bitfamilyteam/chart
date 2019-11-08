@@ -10,6 +10,7 @@ type RateSectionProps = {
   period?: string,
   height?: number,
   fontFamily: string,
+  fiatSign: string,
 };
 
 type RateSectionState = { position?: number };
@@ -24,7 +25,7 @@ function preparePercents(value: number): string {
 }
 
 function getRateStrings(props: RateSectionProps, position?: number) {
-  const { data, period } = props;
+  const { data, period, fiatSign } = props;
   if (data && data.length <= 1) {
     return { mainString: '', subString: '' };
   }
@@ -44,7 +45,7 @@ function getRateStrings(props: RateSectionProps, position?: number) {
 
   const mainString = prepareValue(end);
   const value = prepareValue(end - start);
-  const deltaString = `${start > end ? '-' : '+'} $${value}`;
+  const deltaString = `${start > end ? '-' : '+'} ${fiatSign}${value}`;
 
   if (period === 'all') {
     return { mainString, subString: null };
@@ -65,7 +66,7 @@ class RateSection extends React.PureComponent<RateSectionProps, RateSectionState
   }
 
   render() {
-    const { fontFamily } = this.props;
+    const { fontFamily, fiatSign } = this.props;
     const { mainString, subString } = getRateStrings(this.props, this.state.position);
 
     const [wholeSum, partSum] = mainString.split('.');
@@ -74,7 +75,7 @@ class RateSection extends React.PureComponent<RateSectionProps, RateSectionState
     return (
       <View style={{ height: this.props.height || 60, width: '100%' }}>
         <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'center' }}>
-          <Text style={textStyle}>$</Text>
+          <Text style={textStyle}>{fiatSign}</Text>
           <Text
             style={{
               ...textStyle,
