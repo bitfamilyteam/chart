@@ -1,13 +1,14 @@
 // @flow
 
-import R from 'ramda';
+import * as R from 'ramda';
 import React from 'react';
-import type { Node } from 'react';
 import * as shape from 'd3-shape';
-import { View, StyleSheet, PanResponder } from 'react-native';
+import {
+  View, StyleSheet, PanResponder, Dimensions,
+} from 'react-native';
 import { moment } from '../config';
 import AnimatedChart from './AnimatedChart';
-import type { PressEvent, LayoutEvent, Point } from './types';
+import type { PressEvent, Point } from './types';
 import { handleSingleDataPoint } from './helpers';
 import Gradient from './Gradient';
 import type { GradientOptions } from './Gradient';
@@ -51,14 +52,13 @@ const addInset = (first: ContentInset, second?: ContentInset): ContentInset => (
 
 const RATE_SECTION_HEIGHT = 60;
 
-function generateGradients(gradientOptions: { [key: string]: GradientOptions }): Array<Node> {
-  const keys = R.keys(gradientOptions);
-  return R.map(key => <Gradient key={`gradient_${key}`} id={key} options={gradientOptions[key]} />, keys);
-}
-
 function calculateRightInset(period?: string, width: number, data: Array<Point>): number {
-  if (period === 'live') return 30;
-  if (period !== 'day' || !data || data.length === 0) return 0;
+  if (period === 'live') {
+    return 30;
+  }
+  if (period !== 'day' || !data || data.length === 0) {
+    return 0;
+  }
 
   const currentTime = R.last(data).x;
   const startOfDayTime = moment(currentTime)
@@ -76,7 +76,8 @@ class Chart extends React.PureComponent<ChartProps, ChartState> {
 
   constructor(props: ChartProps) {
     super(props);
-    this.state = { width: 0, height: 0 };
+    const { width, height } = Dimensions.get('window');
+    this.state = { width, height };
 
     this.panResponder = PanResponder.create({
       onStartShouldSetPanResponder: R.T,
@@ -128,14 +129,12 @@ class Chart extends React.PureComponent<ChartProps, ChartState> {
     this.rateSection.setPosition(position);
   }
 
-  onLayout = (event: LayoutEvent): void => {
-    const { width, height } = event.nativeEvent.layout;
-    this.setState({ width, height });
-  };
-
   getContentInset(): ContentInset {
-    const { width, height } = this.state;
-    const { data, period } = this.props;
+    const {
+      state: { width, height },
+      props: { data, period },
+    } = this;
+
     if (data && data.length === 1) {
       return {
         left: 0,
@@ -155,15 +154,19 @@ class Chart extends React.PureComponent<ChartProps, ChartState> {
 
   render() {
     const {
-      data, strokeWidth, tooltip, period, currency, fiatSign, fontFamily = getDefaultFontFamily(),
-    } = this.props;
-    if (!(data && data.length)) return <View />;
-    const { width, height } = this.state;
+      state: { width, height },
+      props: {
+        data, strokeWidth, tooltip, period, currency, fiatSign, fontFamily = getDefaultFontFamily(), contentInset,
+      },
+    } = this;
+
+    if (!(data && data.length)) {
+      return <View />;
+    }
     const newData = handleSingleDataPoint(data);
-    const gradientOptions = R.mergeDeepRight(defaultGradients, this.props.gradientOptions || {});
 
     return (
-      <View style={this.props.style || { flex: 1 }} onLayout={this.onLayout} {...this.panResponder.panHandlers}>
+      <View style={this.props.style || { flex: 1 }} {...this.panResponder.panHandlers}>
         <View style={{ top: 130 }}>
           <RateSection
             ref={this.onRateSectionRef}
@@ -182,7 +185,7 @@ class Chart extends React.PureComponent<ChartProps, ChartState> {
           style={{ flex: 1 }}
           data={newData}
           curve={shape.curveLinear}
-          contentInset={addInset(this.getContentInset(), this.props.contentInset)}
+          contentInset={addInset(this.getContentInset(), contentInset)}
           width={width}
           height={height - RATE_SECTION_HEIGHT}
           tooltip={tooltip}
@@ -196,7 +199,8 @@ class Chart extends React.PureComponent<ChartProps, ChartState> {
             fill: 'url(#areaChartFill)',
           }}
         >
-          {generateGradients(R.pick(['areaChart', 'areaChartFill'], gradientOptions))}
+          <Gradient key="gradient-area-chart" id="areaChart" options={defaultGradients.areaChart} />
+          <Gradient key="gradient-area-chartFill" id="areaChartFill" options={defaultGradients.areaChartFill} />
         </AnimatedChart>
       </View>
     );
