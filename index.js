@@ -1,50 +1,28 @@
-import R from 'ramda';
+
+import * as R from 'ramda';
 import React from 'react';
-import {
-  Text, View, Image, Platform, StyleSheet,
-} from 'react-native';
-import { moment, changeMomentLocale } from './src/config';
+import { Text, View, StyleSheet } from 'react-native';
+import FastImage from 'react-native-fast-image';
+import ms from 'ms';
+import { changeMomentLocale } from './src/config';
 import TogglePeriod from './src/TogglePeriod';
 import ToggleCurrency from './src/ToggleCurrency';
 import Chart from './src/Chart';
 import SavlLogo from './src/SavlLogo';
 import backgroundImage from './resources/background.jpg';
+import { removeExtraPoints } from './src/Chart/helpers';
 
-function getTimeLimit(time, period) {
-  switch (period) {
-    case 'live':
-      return moment(time).subtract(1, 'hour');
+const timePeriods = {
+  live: '2 hour',
+  day: '1 day',
+  week: '1 week',
+  month: '31 days',
+  year: '1 year',
+  all: 'all',
+};
 
-    case 'day':
-      return moment(time).startOf('day');
-
-    case 'week':
-      return moment(time).subtract(7, 'day');
-
-    case 'month':
-      return moment(time).subtract(1, 'month');
-
-    case 'year':
-      return moment(time).subtract(1, 'year');
-
-    default:
-      return null;
-  }
-}
-
-function filterData(data, period, page) {
-  if (data && data.length) {
-    const lastTime = moment(data[data.length - 1].x);
-    lastTime.subtract(page, 'day');
-    const timeLimit = getTimeLimit(lastTime, period);
-    if (!timeLimit) return data;
-
-    const min = timeLimit.valueOf();
-    const max = lastTime.valueOf();
-
-    return R.filter(({ x }) => x >= min && x <= max, data);
-  }
-  return [];
+function filterData(data, period) {
+  return removeExtraPoints([timePeriods[period]], data, 60, ms('2 week'));
 }
 
 const stretch = {
@@ -84,14 +62,14 @@ const stylesPrepared = bottomOffset =>
     },
   });
 
-class ChartPage extends React.Component {
+class ChartPage extends React.PureComponent {
   constructor(props) {
     super(props);
-    changeMomentLocale(props.locale);
+    const { locale, initialCurrency } = this.props;
+    changeMomentLocale(locale);
     this.state = {
       period: 'year',
-      page: 0,
-      pickedCurrency: props.initialCurrency || '',
+      pickedCurrency: initialCurrency || '',
     };
   }
 
@@ -105,19 +83,23 @@ class ChartPage extends React.Component {
       props: {
         data, bottomOffset, currencies, periods, fiat,
       },
-      state: { period, page, pickedCurrency },
+      state: { period, pickedCurrency },
     } = this;
-    const styles = stylesPrepared(bottomOffset);
-    if (!data) return <Text>Loading...</Text>;
 
+    if (!data) {
+      return <Text>Loading...</Text>;
+    }
+
+    const styles = stylesPrepared(bottomOffset);
     const currency = data[pickedCurrency] ? pickedCurrency : currencies[0];
     const currencyData = R.path([currency, fiat.slug, 'ratesData'], data);
 
-    const filteredData = filterData(currencyData, period, page);
+    const filteredData = filterData(currencyData, period);
     const isDeclining = filteredData.length >= 2 && filteredData[0].y > filteredData[filteredData.length - 1].y;
+
     return (
       <View style={styles.container}>
-        <Image style={styles.bg} source={backgroundImage} />
+        <FastImage style={styles.bg} source={backgroundImage} />
         <View style={styles.chartWrapper}>
           <Chart
             data={filteredData}
